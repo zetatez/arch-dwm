@@ -26,7 +26,7 @@ the /usr/local namespace by default).
 Afterwards enter the following command to build and install dwm (if
 necessary as root):
 
-    make clean install
+    sh build.sh
 
 
 ## Running dwm
@@ -41,15 +41,10 @@ the DISPLAY environment variable is set correctly, e.g.:
 
 (This will start dwm on display :1 of the host foo.bar.)
 
-In order to display status info in the bar, you can do something
-like this in your .xinitrc:
+In order to display status info in the bar, you can use dwmstats
 
-    while xsetroot -name "`date` `uptime | sed 's/.*,//'`"
-    do
-    	sleep 1
-    done &
-    exec dwm
-
+    git@github.com:zetatez/arch-dwmstatus.git
+    cd arch-dwmstatus && sh build.sh
 
 ## Configuration
 The configuration of dwm is done by creating a custom config.h
