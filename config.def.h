@@ -34,12 +34,12 @@ typedef struct {                                                                
 } Sp;                                                                               // dwm-scratchpads
 const char *spcmd1[] = {"st", "-n", "spst", "-g", "154x44", NULL };                 // dwm-scratchpads
 const char *spcmd2[] = {"st", "-n", "spra", "-g", "154x44", "-e", "ranger", NULL }; // dwm-scratchpads
-/* const char *spcmd3[] = {"vimb", NULL };                                          // dwm-scratchpads
+// const char *spcmd3[] = {"vimb", NULL };                                          // dwm-scratchpads
 static Sp scratchpads[] = {                                                         // dwm-scratchpads
 	/* name          cmd  */                                                        // dwm-scratchpads
 	{"spst",         spcmd1},                                                       // dwm-scratchpads
 	{"spra",         spcmd2},                                                       // dwm-scratchpads
-	/* {"vimb",         spcmd3},                                                    // dwm-scratchpads
+//  {"vimb",         spcmd3},                                                    // dwm-scratchpads
 };                                                                                  // dwm-scratchpads
 
 /* tagging */
