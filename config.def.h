@@ -34,12 +34,12 @@ typedef struct {                                                                
 } Sp;                                                                               // dwm-scratchpads
 const char *spcmd1[] = {"st", "-n", "spst", "-g", "154x44", NULL };                 // dwm-scratchpads
 const char *spcmd2[] = {"st", "-n", "spra", "-g", "154x44", "-e", "ranger", NULL }; // dwm-scratchpads
-// const char *spcmd3[] = {"vimb", NULL };                                          // dwm-scratchpads
+const char *spcmd3[] = {"vivaldi-stable", NULL };                                   // dwm-scratchpads
 static Sp scratchpads[] = {                                                         // dwm-scratchpads
 	/* name          cmd  */                                                        // dwm-scratchpads
 	{"spst",         spcmd1},                                                       // dwm-scratchpads
 	{"spra",         spcmd2},                                                       // dwm-scratchpads
-//  {"vimb",         spcmd3},                                                    // dwm-scratchpads
+    {"vivaldi",      spcmd3},                                                       // dwm-scratchpads
 };                                                                                  // dwm-scratchpads
 
 /* tagging */
@@ -55,7 +55,7 @@ static const Rule rules[] = {
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 	{ NULL,		  "spst",     NULL,	      SPTAG(0),		1,			 -1 },
 	{ NULL,		  "spra",     NULL,		  SPTAG(1),		1,			 -1 },
-	/* { NULL,		  "vimb",     NULL,		  SPTAG(2), 	0,			 -1 }, */
+	{ NULL,		  "vivaldi",  NULL,		  SPTAG(2), 	0,			 -1 },
 };
 
 /* layout(s) */
