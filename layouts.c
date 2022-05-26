@@ -1,4 +1,4 @@
-
+// layouts
 /* dwm-fibonacci ------------------------------------------------------------ */
 void
 fibonacci(Monitor *mon, int s) {
