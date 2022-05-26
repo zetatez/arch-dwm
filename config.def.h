@@ -73,6 +73,7 @@ static const Layout layouts[] = {
     { "|∇",             spiral },                                                     // dwm-fibonacci
     { "|∫",            dwindle },                                                     // dwm-fibonacci
     { "|⋕",        gaplessgrid },                                                     // dwm-gaplessgrid
+    { "|e^iπ=-1",     lefttile },
 };
 
 /* key definitions */
@@ -111,6 +112,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} }, // dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} }, // dwm-fibonacci
     { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[5]} }, // dwm-gaplessgrid
+    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[6]} }, // dwm-gaplessgrid
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
