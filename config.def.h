@@ -34,12 +34,12 @@ typedef struct {                                                                
 } Sp;                                                                               // dwm-scratchpads
 const char *spcmd1[] = {"st", "-n", "spst", "-g", "154x44", NULL };                 // dwm-scratchpads
 const char *spcmd2[] = {"st", "-n", "spra", "-g", "154x44", "-e", "ranger", NULL }; // dwm-scratchpads
-/* const char *spcmd3[] = {"vimb", NULL };                                             // dwm-scratchpads */
+/* const char *spcmd3[] = {"vimb", NULL };                                          // dwm-scratchpads
 static Sp scratchpads[] = {                                                         // dwm-scratchpads
 	/* name          cmd  */                                                        // dwm-scratchpads
 	{"spst",         spcmd1},                                                       // dwm-scratchpads
 	{"spra",         spcmd2},                                                       // dwm-scratchpads
-	/* {"vimb",         spcmd3},                                                       // dwm-scratchpads */
+	/* {"vimb",         spcmd3},                                                    // dwm-scratchpads
 };                                                                                  // dwm-scratchpads
 
 /* tagging */
@@ -70,10 +70,12 @@ static const Layout layouts[] = {
     { "|e^iπ=-1",         tile },    /* first entry is default */
     { "|∅",               NULL },    /* no layout function means floating behavior */
     { "|ζ(s)=∑1/n^s",  monocle },
+    { "|e^iπ=-1",     lefttile },
     { "|∇",             spiral },                                                     // dwm-fibonacci
     { "|∫",            dwindle },                                                     // dwm-fibonacci
     { "|⋕",        gaplessgrid },                                                     // dwm-gaplessgrid
-    { "|e^iπ=-1",     lefttile },
+	{ "|o",             bstack },
+	{ "|∞",        bstackhoriz },
 };
 
 /* key definitions */
@@ -109,10 +111,12 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} }, // dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} }, // dwm-fibonacci
-    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[5]} }, // dwm-gaplessgrid
-    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[6]} }, // dwm-gaplessgrid
+    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} }, // dwm-lefttile
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[4]} }, // dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[5]} }, // dwm-fibonacci
+    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[6]} }, // dwm-gaplessgrid
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[7]} }, // dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[8]} }, // dwm-bottomstack
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
