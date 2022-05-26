@@ -64,3 +64,42 @@ void                                                                         // 
 spiral(Monitor *mon) {                                                       // dwm-fibonacci
 	fibonacci(mon, 0);                                                       // dwm-fibonacci
 }                                                                            // dwm-fibonacci
+
+void                                                                                // dwm-gaplessgrid
+gaplessgrid(Monitor *m) {                                                           // dwm-gaplessgrid
+	unsigned int n, cols, rows, cn, rn, i, cx, cy, cw, ch;                          // dwm-gaplessgrid
+	Client *c;                                                                      // dwm-gaplessgrid
+                                                                                    // dwm-gaplessgrid
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;         // dwm-gaplessgrid
+	if(n == 0)                                                                      // dwm-gaplessgrid
+		return;                                                                     // dwm-gaplessgrid
+                                                                                    // dwm-gaplessgrid
+	/* grid dimensions */                                                           // dwm-gaplessgrid
+	for(cols = 0; cols <= n/2; cols++)                                              // dwm-gaplessgrid
+		if(cols*cols >= n)                                                          // dwm-gaplessgrid
+			break;                                                                  // dwm-gaplessgrid
+	if(n == 5) /* set layout against the general calculation: not 1:2:2, but 2:3 */ // dwm-gaplessgrid
+		cols = 2;                                                                   // dwm-gaplessgrid
+	rows = n/cols;                                                                  // dwm-gaplessgrid
+                                                                                    // dwm-gaplessgrid
+	/* window geometries */                                                         // dwm-gaplessgrid
+	cw = cols ? m->ww / cols : m->ww;                                               // dwm-gaplessgrid
+	cn = 0; /* current column number */                                             // dwm-gaplessgrid
+	rn = 0; /* current row number */                                                // dwm-gaplessgrid
+	for(i = 0, c = nexttiled(m->clients); c; i++, c = nexttiled(c->next)) {         // dwm-gaplessgrid
+		if(i/rows + 1 > cols - n%cols)                                              // dwm-gaplessgrid
+			rows = n/cols + 1;                                                      // dwm-gaplessgrid
+		ch = rows ? m->wh / rows : m->wh;                                           // dwm-gaplessgrid
+		cx = m->wx + cn*cw;                                                         // dwm-gaplessgrid
+		cy = m->wy + rn*ch;                                                         // dwm-gaplessgrid
+		resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, False);                   // dwm-gaplessgrid
+		rn++;                                                                       // dwm-gaplessgrid
+		if(rn >= rows) {                                                            // dwm-gaplessgrid
+			rn = 0;                                                                 // dwm-gaplessgrid
+			cn++;                                                                   // dwm-gaplessgrid
+		}                                                                           // dwm-gaplessgrid
+	}                                                                               // dwm-gaplessgrid
+}                                                                                   // dwm-gaplessgrid
+                                                                                    // dwm-gaplessgrid
+
+
