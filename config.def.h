@@ -20,11 +20,11 @@ static const char *colors[][3]      = {
 
 static const char *const autostart[] = {                               // dwm-cool-autostart
 	"dwmstatus", "2>&1 >>/dev/null &", NULL,                           // dwm-cool-autostart
-	"picom", NULL,                                                     // dwm-cool-autostart
+// 	"picom", NULL,                                                     // dwm-cool-autostart
 	"dunst", NULL,                                                     // dwm-cool-autostart
     "warpd", NULL,                                                     // dwm-cool-autostart
     "sh", "-c", "pkill -9 trojan; cd ~/.trojan; ./trojan &; cd", NULL, // dwm-cool-autostart
-	"st", NULL,                                                        // dwm-cool-autostart
+// 	"st", NULL,                                                        // dwm-cool-autostart
 	NULL /* terminate */                                               // dwm-cool-autostart
 };                                                                     // dwm-cool-autostart
 
@@ -43,7 +43,7 @@ static Sp scratchpads[] = {                                                     
 };                                                                                  // dwm-scratchpads
 
 /* tagging */
-static const char *tags[] = { "ζ(s)=∑1/n^s", "e^iπ=-1", "o", "∞", "∫", "∇", "≻", "∅", "0" };
+static const char *tags[] = { "ζ(s)=∑1/n^s", "-e^iπ=1", "i", "o", "∞", "∫", "∇", "i", "0" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -67,16 +67,17 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-    { "|e^iπ=-1",         tile },    /* first entry is default */
+    { "|f:x->y",          tile },    /* first entry is default */
+    { "|g:y->x",      lefttile },                                                     // dwm-leftstack
+    { "|M/R",          monocle },
+    { "|A=>B",          spiral },                                                     // dwm-fibonacci
+    { "|A<=B",         dwindle },                                                     // dwm-fibonacci
+    { "|π",        gaplessgrid },                                                     // dwm-gaplessgrid
+	{ "|Ξ",             bstack },                                                     // dwm-bottomstack
+	{ "|Τ",        bstackhoriz },                                                     // dwm-bottomstack
+	{ "|∫",               deck },                                                     // dwm-deck-double
     { "|∅",               NULL },    /* no layout function means floating behavior */
-    { "|ζ(s)=∑1/n^s",  monocle },
-    { "|e^iπ=-1",     lefttile },                                                     // dwm-leftstack
-    { "|∇",             spiral },                                                     // dwm-fibonacci
-    { "|∫",            dwindle },                                                     // dwm-fibonacci
-    { "|⋕",        gaplessgrid },                                                     // dwm-gaplessgrid
-	{ "|o",             bstack },                                                     // dwm-bottomstack
-	{ "|∞",        bstackhoriz },                                                     // dwm-bottomstack
-	{ "|deck",            deck },                                                     // dwm-deck-double
+	{ NULL,               NULL },                                                     // dwm-cyclelayouts
 };
 
 /* key definitions */
@@ -105,23 +106,25 @@ static Key keys[] = {
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.025} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.025} },
+	{ MODKEY|ShiftMask,             XK_h,      setmfact,       {.f = -0.025} },
+	{ MODKEY|ShiftMask,             XK_l,      setmfact,       {.f = +0.025} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} }, // dwm-lefttile
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[4]} }, // dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[5]} }, // dwm-fibonacci
-    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[6]} }, // dwm-gaplessgrid
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[7]} }, // dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[8]} }, // dwm-bottomstack
-	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[9]} }, // dwm-deck-double
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} }, // tile
+    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[1]} }, // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} }, // monocle
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} }, // sprial      dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} }, // dwindle     dwm-fibonacci
+    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[5]} }, // gaplessgrid dwm-gaplessgrid
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[6]} }, // bstack      dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[7]} }, // bstackhoriz dwm-bottomstack
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[8]} }, // deck        dwm-deck-double
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[9]} }, // no layout function means floating behavior
+	{ MODKEY|ControlMask,		    XK_comma,  cyclelayout,    {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
