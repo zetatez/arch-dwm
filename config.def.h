@@ -70,12 +70,13 @@ static const Layout layouts[] = {
     { "|e^iπ=-1",         tile },    /* first entry is default */
     { "|∅",               NULL },    /* no layout function means floating behavior */
     { "|ζ(s)=∑1/n^s",  monocle },
-    { "|e^iπ=-1",     lefttile },
+    { "|e^iπ=-1",     lefttile },                                                     // dwm-leftstack
     { "|∇",             spiral },                                                     // dwm-fibonacci
     { "|∫",            dwindle },                                                     // dwm-fibonacci
     { "|⋕",        gaplessgrid },                                                     // dwm-gaplessgrid
-	{ "|o",             bstack },
-	{ "|∞",        bstackhoriz },
+	{ "|o",             bstack },                                                     // dwm-bottomstack
+	{ "|∞",        bstackhoriz },                                                     // dwm-bottomstack
+	{ "|deck",            deck },                                                     // dwm-deck-double
 };
 
 /* key definitions */
@@ -117,6 +118,7 @@ static Key keys[] = {
     { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[6]} }, // dwm-gaplessgrid
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[7]} }, // dwm-bottomstack
 	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[8]} }, // dwm-bottomstack
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[9]} }, // dwm-deck-double
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
