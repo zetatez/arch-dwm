@@ -18,6 +18,16 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 
+static const char *const autostart[] = {                                                      // dwm-cool-autostart
+	"dwmstatus", "2>&1 >>/dev/null &", NULL,                                                                            // dwm-cool-autostart
+	"picom", NULL,                                                                               // dwm-cool-autostart
+	"dunst", NULL,                                                                            // dwm-cool-autostart
+    "warpd", NULL,                                                                               // dwm-cool-autostart
+    "sh", "-c", "pkill -9 trojan; cd ~/.trojan; ./trojan &; cd", NULL,                                                                               // dwm-cool-autostart
+	"st", NULL,                                                                               // dwm-cool-autostart
+	NULL /* terminate */                                                                      // dwm-cool-autostart
+};                                                                                            // dwm-cool-autostart
+
 /* tagging */
 static const char *tags[] = { "ζ(s)=∑1/n^s", "e^iπ=-1", "o", "∞", "∫", "∇", "≻", "∅", "0" };
 

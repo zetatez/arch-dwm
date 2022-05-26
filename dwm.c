@@ -234,6 +234,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void autostart_exec(void);                           // dwm-cool-autostart
 
 /* variables */
 static const char broken[] = "broken";
@@ -274,6 +275,34 @@ static Window root, wmcheckwin;
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+
+/* dwm will keep pid's of processes from autostart array and kill them at quit */
+static pid_t *autostart_pids;
+static size_t autostart_len;
+
+/* execute command from autostart array */
+static void                                                 // dwm-cool-autostart
+autostart_exec() {                                          // dwm-cool-autostart
+	const char *const *p;                                   // dwm-cool-autostart
+	size_t i = 0;                                           // dwm-cool-autostart
+                                                            // dwm-cool-autostart
+	/* count entries */                                     // dwm-cool-autostart
+	for (p = autostart; *p; autostart_len++, p++)           // dwm-cool-autostart
+		while (*++p);                                       // dwm-cool-autostart
+                                                            // dwm-cool-autostart
+	autostart_pids = malloc(autostart_len * sizeof(pid_t)); // dwm-cool-autostart
+	for (p = autostart; *p; i++, p++) {                     // dwm-cool-autostart
+		if ((autostart_pids[i] = fork()) == 0) {            // dwm-cool-autostart
+			setsid();                                       // dwm-cool-autostart
+			execvp(*p, (char *const *)p);                   // dwm-cool-autostart
+			fprintf(stderr, "dwm: execvp %s\n", *p);        // dwm-cool-autostart
+			perror(" failed");                              // dwm-cool-autostart
+			_exit(EXIT_FAILURE);                            // dwm-cool-autostart
+		}                                                   // dwm-cool-autostart
+		/* skip arguments */                                // dwm-cool-autostart
+		while (*++p);                                       // dwm-cool-autostart
+	}                                                       // dwm-cool-autostart
+}                                                           // dwm-cool-autostart
 
 /* function implementations */
 void
@@ -1255,6 +1284,16 @@ propertynotify(XEvent *e)
 void
 quit(const Arg *arg)
 {
+	size_t i;                                    // dwm-cool-autostart
+                                                 // dwm-cool-autostart
+	/* kill child processes */                   // dwm-cool-autostart
+	for (i = 0; i < autostart_len; i++) {        // dwm-cool-autostart
+		if (0 < autostart_pids[i]) {             // dwm-cool-autostart
+			kill(autostart_pids[i], SIGTERM);    // dwm-cool-autostart
+			waitpid(autostart_pids[i], NULL, 0); // dwm-cool-autostart
+		}                                        // dwm-cool-autostart
+	}                                            // dwm-cool-autostart
+	                                             // dwm-cool-autostart
 	running = 0;
 }
 
@@ -1638,9 +1677,25 @@ showhide(Client *c)
 void
 sigchld(int unused)
 {
+	pid_t pid;                                               // dwm-cool-autostart
+    
 	if (signal(SIGCHLD, sigchld) == SIG_ERR)
 		die("can't install SIGCHLD handler:");
-	while (0 < waitpid(-1, NULL, WNOHANG));
+	// while (0 < waitpid(-1, NULL, WNOHANG));               // dwm-cool-autostart
+	while (0 < (pid = waitpid(-1, NULL, WNOHANG))) {         // dwm-cool-autostart
+		pid_t *p, *lim;                                      // dwm-cool-autostart
+                                                             // dwm-cool-autostart
+		if (!(p = autostart_pids))                           // dwm-cool-autostart
+			continue;                                        // dwm-cool-autostart
+		lim = &p[autostart_len];                             // dwm-cool-autostart
+                                                             // dwm-cool-autostart
+		for (; p < lim; p++) {                               // dwm-cool-autostart
+			if (*p == pid) {                                 // dwm-cool-autostart
+				*p = -1;                                     // dwm-cool-autostart
+				break;                                       // dwm-cool-autostart
+			}                                                // dwm-cool-autostart
+		}                                                    // dwm-cool-autostart
+	}                                                        // dwm-cool-autostart
 }
 
 void
@@ -2146,6 +2201,7 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
+	autostart_exec();                                   // dwm-cool-autostart
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
