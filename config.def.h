@@ -67,8 +67,10 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
+    { "|∅",               NULL },    /* no layout function means floating behavior */
     { "|f:x->y",          tile },    /* first entry is default */
     { "|g:y->x",      lefttile },                                                     // dwm-leftstack
+	{ "||-",          tilewide },                                                     // dwm-tilewide
     { "|M/R",          monocle },
     { "|A=>B",          spiral },                                                     // dwm-fibonacci
     { "|A<=B",         dwindle },                                                     // dwm-fibonacci
@@ -76,7 +78,6 @@ static const Layout layouts[] = {
 	{ "|Ξ",             bstack },                                                     // dwm-bottomstack
 	{ "|Τ",        bstackhoriz },                                                     // dwm-bottomstack
 	{ "|∫",               deck },                                                     // dwm-deck-double
-    { "|∅",               NULL },    /* no layout function means floating behavior */
 	{ NULL,               NULL },                                                     // dwm-cyclelayouts
 };
 
@@ -113,16 +114,17 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} }, // tile
-    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[1]} }, // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} }, // monocle
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} }, // sprial      dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} }, // dwindle     dwm-fibonacci
-    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[5]} }, // gaplessgrid dwm-gaplessgrid
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[6]} }, // bstack      dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[7]} }, // bstackhoriz dwm-bottomstack
-	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[8]} }, // deck        dwm-deck-double
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[9]} }, // no layout function means floating behavior
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[0]} },  // no layout function means floating behavior
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[1]} },  // tile
+    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[3]} }, // tilewide    dwm-tilewide
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[4]} },  // monocle
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[5]} },  // sprial      dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[6]} },  // dwindle     dwm-fibonacci
+    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[7]} },  // gaplessgrid dwm-gaplessgrid
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[8]} },  // bstack      dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[9]} },  // bstackhoriz dwm-bottomstack
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[10]} },  // deck        dwm-deck-double
 	{ MODKEY|ControlMask,		    XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
