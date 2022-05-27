@@ -1,0 +1,81 @@
+From 2916c7a93066da8005e2e30c1e9d90b1e25ac1a1 Mon Sep 17 00:00:00 2001
+From: sympodius <mail@sympodius.net>
+Date: Sat, 30 Apr 2022 10:57:37 +0100
+Subject: [PATCH] The 'tilewide' layout is a variant of the standard 'tile'
+ layout for dwm. Windows added to the master area will be positioned side by
+ side, instead of one on top of the other. This makes better use of screen
+ space on ultra wide monitors. The stack area remains identical to the
+ original 'tile' layout.
+
+---
+ config.def.h |  2 ++
+ dwm.c        | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
+
+diff --git a/config.def.h b/config.def.h
+index a2ac963..e7cd62b 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -42,6 +42,7 @@ static const Layout layouts[] = {
+ 	{ "[]=",      tile },    /* first entry is default */
+ 	{ "><>",      NULL },    /* no layout function means floating behavior */
+ 	{ "[M]",      monocle },
++	{ "[][]=",    tilewide },
+ };
+ 
+ /* key definitions */
+@@ -77,6 +78,7 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+ 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+ 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
++	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[3]} },
+ 	{ MODKEY,                       XK_space,  setlayout,      {0} },
+ 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+ 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+diff --git a/dwm.c b/dwm.c
+index a96f33c..b3ac43b 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -234,6 +234,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
+ static int xerrordummy(Display *dpy, XErrorEvent *ee);
+ static int xerrorstart(Display *dpy, XErrorEvent *ee);
+ static void zoom(const Arg *arg);
++static void tilewide(Monitor *m);
+ 
+ /* variables */
+ static const char broken[] = "broken";
+@@ -2153,3 +2154,31 @@ main(int argc, char *argv[])
+ 	XCloseDisplay(dpy);
+ 	return EXIT_SUCCESS;
+ }
++
++void
++tilewide(Monitor *m)
++{
++        unsigned int i, n, w, h, mw, mx, ty;
++	Client *c;
++
++	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
++	if (n == 0)
++		return;
++	if (n > m->nmaster)
++		mw = m->nmaster ? m->ww * m->mfact : 0;
++	else
++		mw = m->ww;
++	for (i = mx = ty = 0, c = nexttiled(m->clients); c;
++	     c = nexttiled(c->next), i++)
++		if (i < m->nmaster) {
++		        w = (mw - mx) / (MIN(n, m->nmaster) - i);
++		        resize(c, m->wx + mx, m->wy, w - (2*c->bw), (m->wh - ty) - (2*c->bw), 0);
++		        if  (mx + WIDTH(c) < m->ww)
++		                mx += WIDTH(c);
++		} else {
++			h = (m->wh - ty) / (n - i);
++			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
++			if (ty + HEIGHT(c) < m->wh)
++				ty += HEIGHT(c);
++		}
++}
+--
+2.35.1
+
