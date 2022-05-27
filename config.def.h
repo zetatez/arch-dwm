@@ -61,14 +61,15 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+// static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */ // dwm-tatami
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-    { "|∅",               NULL },    /* no layout function means floating behavior */
     { "|f:x->y",          tile },    /* first entry is default */
+    { "|∅",               NULL },    /* no layout function means floating behavior */
     { "|g:y->x",      lefttile },                                                     // dwm-leftstack
 	{ "||-",          tilewide },                                                     // dwm-tilewide
     { "|M/R",          monocle },
@@ -78,6 +79,7 @@ static const Layout layouts[] = {
 	{ "|Ξ",             bstack },                                                     // dwm-bottomstack
 	{ "|Τ",        bstackhoriz },                                                     // dwm-bottomstack
 	{ "|∫",               deck },                                                     // dwm-deck-double
+	{ "|+",             tatami },                                                     // dwm-tatami
 	{ NULL,               NULL },                                                     // dwm-cyclelayouts
 };
 
@@ -114,17 +116,18 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[0]} },  // no layout function means floating behavior
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[1]} },  // tile
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // tile
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },  // no layout function means floating behavior
     { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[3]} }, // tilewide    dwm-tilewide
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[3]} },  // tilewide    dwm-tilewide
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[4]} },  // monocle
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[5]} },  // sprial      dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[6]} },  // dwindle     dwm-fibonacci
     { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[7]} },  // gaplessgrid dwm-gaplessgrid
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[8]} },  // bstack      dwm-bottomstack
 	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[9]} },  // bstackhoriz dwm-bottomstack
-	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[10]} },  // deck        dwm-deck-double
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[10]} }, // deck        dwm-deck-double
+	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[11]} }, // tatami      dwm-tatami
 	{ MODKEY|ControlMask,		    XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
