@@ -55,16 +55,16 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      	         instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
-	{ "st",                  NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow
-	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow
-	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow
-	{ "Gimp",                NULL,       NULL,    0,            0,           0,                    -1 }, // dwm-centerfirstwindow
-	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-    { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-    { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "vivaldi",  NULL,	  SPTAG(4), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ "st",                  NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ "Gimp",                NULL,       NULL,    0,            0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ NULL,		             "spst",     NULL,	  SPTAG(0),		0,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		0,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+    { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+    { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ NULL,		             "vivaldi",  NULL,	  SPTAG(4), 	1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
 };
 
 /* layout(s) */
