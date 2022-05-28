@@ -32,7 +32,7 @@ typedef struct {                                                                
 	const char *name;                                                               // dwm-scratchpads
 	const void *cmd;                                                                // dwm-scratchpads
 } Sp;                                                                               // dwm-scratchpads
-const char *spcmd1[] = {"st", "-n", "spst", "-g", "154x44", NULL };                 // dwm-scratchpads
+const char *spcmd1[] = {"st", "-n", "spst", "-g", "120x30", NULL };                 // dwm-scratchpads
 const char *spcmd2[] = {"st", "-n", "spra", "-g", "154x44", "-e", "ranger", NULL }; // dwm-scratchpads
 const char *spcmd3[] = {"vivaldi-stable", NULL };                                   // dwm-scratchpads
 static Sp scratchpads[] = {                                                         // dwm-scratchpads
@@ -50,31 +50,34 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ NULL,		  "spst",     NULL,	      SPTAG(0),		1,			 -1 },
-	{ NULL,		  "spra",     NULL,		  SPTAG(1),		1,			 -1 },
-	{ NULL,		  "vivaldi",  NULL,		  SPTAG(2), 	0,			 -1 },
+	/* class      	     instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
+	{ "st",              NULL,       NULL,    0,            0,     	     1,		               -1 },                                                            // dwm-centerfirstwindow
+	{ "Gimp",            NULL,       NULL,    0,            1,           0,                    -1 },                                                            // dwm-centerfirstwindow
+	{ "Firefox",         NULL,       NULL,    1 << 8,       0,           0,                    -1 },                                                            // dwm-centerfirstwindow
+	{ NULL,		         "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 },                                                            // dwm-centerfirstwindow
+	{ NULL,		         "spra",     NULL,	  SPTAG(1),		1,			 0,                    -1 },                                                            // dwm-centerfirstwindow
+	{ NULL,		         "vivaldi",  NULL,	  SPTAG(2), 	0,			 0,                    -1 },                                                            // dwm-centerfirstwindow
 };
 
 /* layout(s) */
-static const float mfact     = 0.84; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 2;    /* number of clients in master area */
-// static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */ // dwm-tatami
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const float mfact            = 0.50; /* factor of master area size [0.05..0.95] */
+static const int nmaster            = 1;    /* number of clients in master area */
+// static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
+static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
+static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
+static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
+static const float firstwindowsz    = 0.32; /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
 
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "f:x->y",          bstack },                                                     // dwm-bottomstack
-	{ "g:y->x",     bstackhoriz },                                                     // dwm-bottomstack
-    { "∫_ E^r(t)du",     lefttile },                                                     // dwm-leftstack
-    { "∅",                 NULL },    /* no layout function means floating behavior */
     { "∫_E^r(t)du",         tile },    /* first entry is default */
-	{ "∫_E^r(t)du",     tilewide },                                                     // dwm-tilewide
+    { "∅",                 NULL  },    /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
+    { "∫_E^r(t)du",     lefttile },                                                     // dwm-leftstack
+	{ "∫_E^r(t)du",     tilewide },                                                     // dwm-tilewide
+	{ "f:x->y",          bstack  },                                                     // dwm-bottomstack
+	{ "g:y->x",     bstackhoriz  },                                                     // dwm-bottomstack
     { "∫_E^r(t)du",       spiral },                                                     // dwm-fibonacci
     { "∫_E^r(t)du",      dwindle },                                                     // dwm-fibonacci
     { "∫_E^r(t)du",  gaplessgrid },                                                     // dwm-gaplessgrid
@@ -116,13 +119,13 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[0]} },  // bstack      dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },  // bstackhoriz dwm-bottomstack
-    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[3]} },  // no layout function means floating behavior
-	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[4]} },  // tile
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[5]} },  // tilewide    dwm-tilewide
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[6]} },  // monocle
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // tile
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },  // no layout function means floating behavior
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },  // monocle
+    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} },  // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[4]} },  // tilewide    dwm-tilewide
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[5]} },  // bstack      dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[6]} },  // bstackhoriz dwm-bottomstack
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[7]} },  // sprial      dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[8]} },  // dwindle     dwm-fibonacci
     { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[9]} },  // gaplessgrid dwm-gaplessgrid

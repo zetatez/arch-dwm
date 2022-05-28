@@ -98,7 +98,8 @@ struct Client {
 	int bw, oldbw;
 	unsigned int tags;
 // 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;           // dwm-sticky
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky; // dwm-sticky
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky; // dwm-sticky                                      // dwm-centerfirstwindow
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow;                                  // dwm-centerfirstwindow
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -144,6 +145,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
+	int CenterThisWindow;                                                                                                               // dwm-centerfirstwindow
 	int monitor;
 } Rule;
 
@@ -325,6 +327,7 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
+    c->CenterThisWindow = 0;                                                                                                            // dwm-centerfirstwindow
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -337,6 +340,7 @@ applyrules(Client *c)
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
+			c->CenterThisWindow = r->CenterThisWindow;                                                                                  // dwm-centerfirstwindow
 			c->tags |= r->tags;
 			if ((r->tags & SPTAGMASK) && r->isfloating) {             // dwm-scratchpads
 				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);  // dwm-scratchpads
@@ -1697,7 +1701,7 @@ void
 sigchld(int unused)
 {
 	pid_t pid;                                               // dwm-cool-autostart
-    
+
 	if (signal(SIGCHLD, sigchld) == SIG_ERR)
 		die("can't install SIGCHLD handler:");
 	// while (0 < waitpid(-1, NULL, WNOHANG));               // dwm-cool-autostart
@@ -1777,6 +1781,8 @@ tile(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
+
+    centerfirstwindow(n); // dwm-centerfirstwindow
 }
 
 void

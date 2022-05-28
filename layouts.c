@@ -1,60 +1,79 @@
 // layouts
+
+ // dwm-centerfirstwindow
+void
+centerfirstwindow(int n) {
+    if (!mcenterfirstwindow) { return; }
+
+    float fwsz = 0.5;
+    fwsz = (firstwindowsz > 0.8) ? 0.8 : firstwindowsz;
+    fwsz = (firstwindowsz < 0.2) ? 0.2 : firstwindowsz;
+	if (n == 1 && selmon->sel->CenterThisWindow)
+        resizeclient(selmon->sel,
+                (selmon->mw - selmon->mw * fwsz) / 2,
+                (selmon->mh - selmon->mh * fwsz) / 2,
+                selmon->mw * fwsz,
+                selmon->mh * fwsz);
+}
+
 /* dwm-fibonacci ------------------------------------------------------------ */
 void
 fibonacci(Monitor *mon, int s) {
 	unsigned int i, n, nx, ny, nw, nh;
 	Client *c;
                                                                              
-	for(n = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next), n++);
-	if(n == 0)
-		return;
-	                                                                         
-	nx = mon->wx;
-	ny = 0;
-	nw = mon->ww;
-	nh = mon->wh;
-	                                                                         
-	for(i = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next)) {
-		if((i % 2 && nh / 2 > 2 * c->bw)
-		   || (!(i % 2) && nw / 2 > 2 * c->bw)) {
-			if(i < n - 1) {
-				if(i % 2)
-					nh /= 2;
-				else
-					nw /= 2;
-				if((i % 4) == 2 && !s)
-					nx += nw;
-				else if((i % 4) == 3 && !s)
-					ny += nh;
-			}
-			if((i % 4) == 0) {
-				if(s)
-					ny += nh;
-				else
-					ny -= nh;
-			}
-			else if((i % 4) == 1)
-				nx += nw;
-			else if((i % 4) == 2)
-				ny += nh;
-			else if((i % 4) == 3) {
-				if(s)
-					nx += nw;
-				else
-					nx -= nw;
-			}
-			if(i == 0)
-			{
-				if(n != 1)
-					nw = mon->ww * mon->mfact;
-				ny = mon->wy;
-			}
-			else if(i == 1)
-				nw = mon->ww - nw;
-			i++;
-		}
-		resize(c, nx, ny, nw - 2 * c->bw, nh - 2 * c->bw, False);
-	}
+    for(n = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    nx = mon->wx;
+    ny = 0;
+    nw = mon->ww;
+    nh = mon->wh;
+
+    for(i = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next)) {
+        if((i % 2 && nh / 2 > 2 * c->bw)
+                || (!(i % 2) && nw / 2 > 2 * c->bw)) {
+            if(i < n - 1) {
+                if(i % 2)
+                    nh /= 2;
+                else
+                    nw /= 2;
+                if((i % 4) == 2 && !s)
+                    nx += nw;
+                else if((i % 4) == 3 && !s)
+                    ny += nh;
+            }
+            if((i % 4) == 0) {
+                if(s)
+                    ny += nh;
+                else
+                    ny -= nh;
+            }
+            else if((i % 4) == 1)
+                nx += nw;
+            else if((i % 4) == 2)
+                ny += nh;
+            else if((i % 4) == 3) {
+                if(s)
+                    nx += nw;
+                else
+                    nx -= nw;
+            }
+            if(i == 0)
+            {
+                if(n != 1)
+                    nw = mon->ww * mon->mfact;
+                ny = mon->wy;
+            }
+            else if(i == 1)
+                nw = mon->ww - nw;
+            i++;
+        }
+        resize(c, nx, ny, nw - 2 * c->bw, nh - 2 * c->bw, False);
+    }
+
+    centerfirstwindow(n);
 }
                                                                              
 void
@@ -102,6 +121,8 @@ gaplessgrid(Monitor *m) {
 			cn++;
 		}
 	}
+    
+    centerfirstwindow(n);
 }
                                                                                     
 /* dwm-lefttile ------------------------------------------------------------ */
@@ -133,6 +154,8 @@ lefttile(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
+
+    centerfirstwindow(n);
 }
 
 /* dwm-bottomstack ------------------------------------------------------------ */
@@ -166,6 +189,8 @@ bstack(Monitor *m) {
 				tx += WIDTH(c);
 		}
 	}
+    
+    centerfirstwindow(n);
 }
 
 static void
@@ -196,6 +221,8 @@ bstackhoriz(Monitor *m) {
 				ty += HEIGHT(c);
 		}
 	}
+
+    centerfirstwindow(n);
 }
 
 /* dwm-deck-double ------------------------------------------------------------ */
@@ -218,6 +245,8 @@ deck(Monitor *m) {
             resize(c, m->wx, m->wy, mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
         else
             resize(c, m->wx + mw, m->wy, m->ww - mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
+
+    centerfirstwindow(n);
 }
 
 /* dwm-tilewide ------------------------------------------------------------ */
@@ -247,6 +276,8 @@ tilewide(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
+
+    centerfirstwindow(n);
 }
 
 /* dwm-tatami ------------------------------------------------------------ */
@@ -406,4 +437,6 @@ tatami(Monitor *m) {
 		resize(c, tnx, tny, tnw - 2 * c->bw, tnh - 2 * c->bw, False);
 		}
 	}
+
+    centerfirstwindow(n);
 }
