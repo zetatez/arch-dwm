@@ -65,16 +65,16 @@ static const int nmaster            = 1;    /* number of clients in master area 
 // static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
-static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
-static const float firstwindowsz    = 0.32; /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
+static const int mcenterfirstwindow = 1;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
+static const float firstwindowsz    = 0.40; /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
 
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-    { "∫_E^r(t)du",         tile }, /* first entry is default */
+    { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
     { "∅",                 NULL  }, /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
-    { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
+    { "∫_E^r(t)du",         tile }, /* first entry is default */
 	{ "∫_E^r(t)du",     tilewide }, // dwm-tilewide
 	{ "f:x->y",          bstack  }, // dwm-bottomstack
 	{ "g:y->x",     bstackhoriz  }, // dwm-bottomstack
@@ -119,10 +119,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // tile
+    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // lefttile    dwm-lefttile
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },  // no layout function means floating behavior
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },  // monocle
-    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} },  // lefttile    dwm-lefttile
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} },  // tile
 	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[4]} },  // tilewide    dwm-tilewide
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[5]} },  // bstack      dwm-bottomstack
 	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[6]} },  // bstackhoriz dwm-bottomstack
