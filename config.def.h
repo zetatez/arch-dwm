@@ -28,19 +28,21 @@ static const char *const autostart[] = {                               // dwm-co
 	NULL /* terminate */                                               // dwm-cool-autostart
 };                                                                     // dwm-cool-autostart
 
-typedef struct {                                                                    // dwm-scratchpads
-	const char *name;                                                               // dwm-scratchpads
-	const void *cmd;                                                                // dwm-scratchpads
-} Sp;                                                                               // dwm-scratchpads
-const char *spcmd1[] = {"st", "-n", "spst", "-g", "120x20", NULL };                 // dwm-scratchpads
-const char *spcmd2[] = {"st", "-n", "spra", "-g", "120x30", "-e", "ranger", NULL }; // dwm-scratchpads
-const char *spcmd3[] = {"vivaldi-stable", NULL };                                   // dwm-scratchpads
-static Sp scratchpads[] = {                                                         // dwm-scratchpads
-	/* name          cmd  */                                                        // dwm-scratchpads
-	{"spst",         spcmd1},                                                       // dwm-scratchpads
-	{"spra",         spcmd2},                                                       // dwm-scratchpads
-    {"vivaldi",      spcmd3},                                                       // dwm-scratchpads
-};                                                                                  // dwm-scratchpads
+typedef struct {                                                                        // dwm-scratchpads
+	const char *name;                                                                   // dwm-scratchpads
+	const void *cmd;                                                                    // dwm-scratchpads
+} Sp;                                                                                   // dwm-scratchpads
+const char *spcmd1[] = {"st", "-n", "spst", "-g", "120x20", NULL };                     // dwm-scratchpads
+const char *spcmd2[] = {"st", "-n", "spra", "-g", "120x30", "-e", "ranger", NULL };     // dwm-scratchpads
+const char *spcmd3[] = {"st", "-n", "spfzfvim", "-g", "120x30", "-e", "fzfvim", NULL }; // dwm-scratchpads
+const char *spcmd4[] = {"vivaldi-stable", NULL };                                       // dwm-scratchpads
+static Sp scratchpads[] = {                                                             // dwm-scratchpads
+	/* name          cmd  */                                                            // dwm-scratchpads
+	{"spst",         spcmd1},                                                           // dwm-scratchpads
+	{"spra",         spcmd2},                                                           // dwm-scratchpads
+	{"spvimfzf",     spcmd3},                                                           // dwm-scratchpads
+    {"vivaldi",      spcmd4},                                                           // dwm-scratchpads
+};                                                                                      // dwm-scratchpads
 
 /* tagging */
 static const char *tags[] = { "ζ(s)=∑1/n^s", "-e^iπ=1", "i", "o", "∞", "∫", "∇", "i", "0" };
@@ -58,7 +60,8 @@ static const Rule rules[] = {
 	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow
 	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 }, // dwm-centerfirstwindow
 	{ NULL,		             "spra",     NULL,	  SPTAG(1),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "vivaldi",  NULL,	  SPTAG(2), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		             "spvimfzf", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		             "vivaldi",  NULL,	  SPTAG(3), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
 };
 
 /* layout(s) */
@@ -68,7 +71,7 @@ static const int nmaster            = 1;    /* number of clients in master area 
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
 static const int mcenterfirstwindow = 1;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
-static const float firstwindowszw   = 0.45; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
+static const float firstwindowszw   = 0.48; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
 static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */ // dwm-centerfistwindow
 
 #include "layouts.c"                                                                    // layouts
@@ -148,6 +151,7 @@ static Key keys[] = {
 	{ MODKEY,           			XK_apostrophe, togglescratch,  {.ui = 0 } }, // dwm-scratchpads
 	{ MODKEY,            			XK_u,	       togglescratch,  {.ui = 1 } }, // dwm-scratchpads
 	{ MODKEY,            			XK_v,	       togglescratch,  {.ui = 2 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_q,	       togglescratch,  {.ui = 3 } }, // dwm-scratchpads
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

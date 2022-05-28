@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# fzf | xargs chopin -o {}
+
+FILE=$(fzf);
+if [[ "x$FILE" == "x" ]]
+then
+    exit;
+fi
+
+vim $FILE
+
