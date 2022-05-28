@@ -59,7 +59,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.81; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 // static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */ // dwm-tatami
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
@@ -68,9 +68,9 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-    { "|f:x->y",          tile },    /* first entry is default */
+    { "|f:x->y",      lefttile },                                                     // dwm-leftstack
     { "|∅",               NULL },    /* no layout function means floating behavior */
-    { "|g:y->x",      lefttile },                                                     // dwm-leftstack
+    { "|g:y->x",          tile },    /* first entry is default */
 	{ "||-",          tilewide },                                                     // dwm-tilewide
     { "|M/R",          monocle },
     { "|A=>B",          spiral },                                                     // dwm-fibonacci
@@ -116,9 +116,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // tile
+    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // lefttile    dwm-lefttile
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },  // no layout function means floating behavior
-    { MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[2]} },  // tile
 	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[3]} },  // tilewide    dwm-tilewide
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[4]} },  // monocle
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[5]} },  // sprial      dwm-fibonacci
