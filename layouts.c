@@ -5,15 +5,18 @@ void
 centerfirstwindow(int n) {
     if (!mcenterfirstwindow) { return; }
 
-    float fwsz = 0.5;
-    fwsz = (firstwindowsz > 0.8) ? 0.8 : firstwindowsz;
-    fwsz = (firstwindowsz < 0.2) ? 0.2 : firstwindowsz;
+    float fwszw,fwszh = 0.5;
+    fwszw = (firstwindowszw > 0.8) ? 0.8 : firstwindowszw;
+    fwszw = (firstwindowszw < 0.2) ? 0.2 : firstwindowszw;
+    fwszh = (firstwindowszh > 0.8) ? 0.8 : firstwindowszh;
+    fwszh = (firstwindowszh < 0.2) ? 0.2 : firstwindowszh;
+
 	if (n == 1 && selmon->sel->CenterThisWindow)
         resizeclient(selmon->sel,
-                (selmon->mw - selmon->mw * fwsz) / 2,
-                (selmon->mh - selmon->mh * fwsz) / 2,
-                selmon->mw * fwsz,
-                selmon->mh * fwsz);
+                (selmon->mw - selmon->mw * fwszw) / 2,
+                (selmon->mh - selmon->mh * fwszh) / 2,
+                selmon->mw * fwszw,
+                selmon->mh * fwszh);
 }
 
 /* dwm-fibonacci ------------------------------------------------------------ */
