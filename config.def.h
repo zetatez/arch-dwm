@@ -68,19 +68,19 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "layouts.c"                                                                  // layouts: dwm-fibonacci
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "|Ξ",             bstack },                                                     // dwm-bottomstack
-	{ "|Τ",        bstackhoriz },                                                     // dwm-bottomstack
-    { "|f:x->y",      lefttile },                                                     // dwm-leftstack
-    { "|∅",               NULL },    /* no layout function means floating behavior */
-    { "|g:y->x",          tile },    /* first entry is default */
-	{ "||-",          tilewide },                                                     // dwm-tilewide
-    { "|M/R",          monocle },
-    { "|A=>B",          spiral },                                                     // dwm-fibonacci
-    { "|A<=B",         dwindle },                                                     // dwm-fibonacci
-    { "|π",        gaplessgrid },                                                     // dwm-gaplessgrid
-	{ "|∫",               deck },                                                     // dwm-deck-double
-	{ "|+",             tatami },                                                     // dwm-tatami
-	{ NULL,               NULL },                                                     // dwm-cyclelayouts
+	{ "f:x->y",          bstack },                                                     // dwm-bottomstack
+	{ "g:y->x",     bstackhoriz },                                                     // dwm-bottomstack
+    { "∫_ E^r(t)du",     lefttile },                                                     // dwm-leftstack
+    { "∅",                 NULL },    /* no layout function means floating behavior */
+    { "∫_E^r(t)du",         tile },    /* first entry is default */
+	{ "∫_E^r(t)du",     tilewide },                                                     // dwm-tilewide
+    { "∫_E^r(t)du",      monocle },
+    { "∫_E^r(t)du",       spiral },                                                     // dwm-fibonacci
+    { "∫_E^r(t)du",      dwindle },                                                     // dwm-fibonacci
+    { "∫_E^r(t)du",  gaplessgrid },                                                     // dwm-gaplessgrid
+	{ "∫_E^r(t)du",         deck },                                                     // dwm-deck-double
+	{ "∫_E^r(t)du",       tatami },                                                     // dwm-tatami
+	{ NULL,                NULL },                                                     // dwm-cyclelayouts
 };
 
 /* key definitions */
