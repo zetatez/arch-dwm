@@ -33,15 +33,17 @@ typedef struct {                                                                
 	const void *cmd;                                                                    // dwm-scratchpads
 } Sp;                                                                                   // dwm-scratchpads
 const char *spcmd1[] = {"st", "-n", "spst", "-g", "120x20", NULL };                     // dwm-scratchpads
-const char *spcmd2[] = {"st", "-n", "spra", "-g", "120x30", "-e", "ranger", NULL };     // dwm-scratchpads
-const char *spcmd3[] = {"st", "-n", "spfzfvim", "-g", "120x30", "-e", "fzfvim", NULL }; // dwm-scratchpads
-const char *spcmd4[] = {"vivaldi-stable", NULL };                                       // dwm-scratchpads
+const char *spcmd2[] = {"st", "-n", "spfzfvim", "-g", "120x30", "-e", "fzfvim", NULL }; // dwm-scratchpads
+const char *spcmd3[] = {"obsidian", NULL };                                             // dwm-scratchpads
+const char *spcmd4[] = {"kitty", NULL };                                                // dwm-scratchpads
+const char *spcmd5[] = {"vivaldi-stable", NULL };                                       // dwm-scratchpads
 static Sp scratchpads[] = {                                                             // dwm-scratchpads
 	/* name          cmd  */                                                            // dwm-scratchpads
 	{"spst",         spcmd1},                                                           // dwm-scratchpads
-	{"spra",         spcmd2},                                                           // dwm-scratchpads
-	{"spvimfzf",     spcmd3},                                                           // dwm-scratchpads
-    {"vivaldi",      spcmd4},                                                           // dwm-scratchpads
+	{"spvimfzf",     spcmd2},                                                           // dwm-scratchpads
+	{"obsidian",     spcmd3},                                                           // dwm-scratchpads
+	{"kitty",        spcmd4},                                                           // dwm-scratchpads
+    {"vivaldi",      spcmd5},                                                           // dwm-scratchpads
 };                                                                                      // dwm-scratchpads
 
 /* tagging */
@@ -59,31 +61,32 @@ static const Rule rules[] = {
 	{ "Gimp",                NULL,       NULL,    0,            0,           0,                    -1 }, // dwm-centerfirstwindow
 	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow
 	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "spra",     NULL,	  SPTAG(1),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "spvimfzf", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow
-	{ NULL,		             "vivaldi",  NULL,	  SPTAG(3), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+    { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+    { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		             "vivaldi",  NULL,	  SPTAG(4), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
 };
 
 /* layout(s) */
-static const float mfact            = 0.50; /* factor of master area size [0.05..0.95] */
-static const int nmaster            = 1;    /* number of clients in master area */
+static const float mfact            = 0.90; /* factor of master area size [0.05..0.95] */
+static const int nmaster            = 2;    /* number of clients in master area */
 // static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
 static const int mcenterfirstwindow = 1;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
-static const float firstwindowszw   = 0.48; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
+static const float firstwindowszw   = 0.64; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
 static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */ // dwm-centerfistwindow
 
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
+	{ "f:x->y",          bstack  }, // dwm-bottomstack
+	{ "g:y->x",     bstackhoriz  }, // dwm-bottomstack
     { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
     { "∅",                 NULL  }, /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
     { "∫_E^r(t)du",         tile }, /* first entry is default */
 	{ "∫_E^r(t)du",     tilewide }, // dwm-tilewide
-	{ "f:x->y",          bstack  }, // dwm-bottomstack
-	{ "g:y->x",     bstackhoriz  }, // dwm-bottomstack
     { "∫_E^r(t)du",       spiral }, // dwm-fibonacci
     { "∫_E^r(t)du",      dwindle }, // dwm-fibonacci
     { "∫_E^r(t)du",  gaplessgrid }, // dwm-gaplessgrid
@@ -125,13 +128,13 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },  // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },  // no layout function means floating behavior
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },  // monocle
-	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[3]} },  // tile
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[4]} },  // tilewide    dwm-tilewide
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[5]} },  // bstack      dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[6]} },  // bstackhoriz dwm-bottomstack
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[0]} },  // bstack      dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },  // bstackhoriz dwm-bottomstack
+    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[3]} },  // no layout function means floating behavior
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[4]} },  // monocle
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[5]} },  // tile
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[6]} },  // tilewide    dwm-tilewide
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[7]} },  // sprial      dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[8]} },  // dwindle     dwm-fibonacci
     { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[9]} },  // gaplessgrid dwm-gaplessgrid
@@ -141,7 +144,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_s,      togglesticky,   {0} },                // dwm-sticky
+	{ MODKEY|ShiftMask,             XK_s,      togglesticky,   {0} },                // dwm-sticky
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
@@ -149,9 +152,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,           			XK_apostrophe, togglescratch,  {.ui = 0 } }, // dwm-scratchpads
-	{ MODKEY,            			XK_u,	       togglescratch,  {.ui = 1 } }, // dwm-scratchpads
-	{ MODKEY,            			XK_v,	       togglescratch,  {.ui = 2 } }, // dwm-scratchpads
-	{ MODKEY,            			XK_q,	       togglescratch,  {.ui = 3 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_v,	       togglescratch,  {.ui = 1 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_q,	       togglescratch,  {.ui = 2 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_z,	       togglescratch,  {.ui = 3 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_u,	       togglescratch,  {.ui = 4 } }, // dwm-scratchpads
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
