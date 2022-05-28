@@ -97,9 +97,9 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;           // dwm-sticky
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky; // dwm-sticky                                      // dwm-centerfirstwindow
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow;                                  // dwm-centerfirstwindow
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;                             // dwm-sticky
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;                   // dwm-sticky            // dwm-centerfirstwindow
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow; // dwm-centerfirstwindow
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -145,7 +145,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
-	int CenterThisWindow;                                                                                                               // dwm-centerfirstwindow
+	int CenterThisWindow; // dwm-centerfirstwindow
 	int monitor;
 } Rule;
 
@@ -220,8 +220,8 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
-static void togglescratch(const Arg *arg);                 // dwm-scratchpads
-static void togglesticky(const Arg *arg);                  // dwm-sticky
+static void togglescratch(const Arg *arg); // dwm-scratchpads
+static void togglesticky(const Arg *arg);  // dwm-sticky
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -244,7 +244,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
-static void autostart_exec(void);                          // dwm-cool-autostart
+static void autostart_exec(void); // dwm-cool-autostart
 static void cyclelayout(const Arg *arg);
 
 /* variables */
@@ -327,7 +327,7 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
-    c->CenterThisWindow = 0;                                                                                                            // dwm-centerfirstwindow
+    c->CenterThisWindow = 0;                                                                          // dwm-centerfirstwindow
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -340,12 +340,12 @@ applyrules(Client *c)
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
-			c->CenterThisWindow = r->CenterThisWindow;                                                                                  // dwm-centerfirstwindow
+			c->CenterThisWindow = r->CenterThisWindow;                                                // dwm-centerfirstwindow
 			c->tags |= r->tags;
-			if ((r->tags & SPTAGMASK) && r->isfloating) {             // dwm-scratchpads
-				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);  // dwm-scratchpads
-				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2); // dwm-scratchpads
-			}                                                         // dwm-scratchpads
+			if ((r->tags & SPTAGMASK) && r->isfloating) {                                             // dwm-scratchpads
+				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);                                  // dwm-scratchpads
+				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);                                 // dwm-scratchpads
+			}                                                                                         // dwm-scratchpads
 
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -1700,25 +1700,25 @@ showhide(Client *c)
 void
 sigchld(int unused)
 {
-	pid_t pid;                                               // dwm-cool-autostart
+	pid_t pid;                                                // dwm-cool-autostart
 
 	if (signal(SIGCHLD, sigchld) == SIG_ERR)
 		die("can't install SIGCHLD handler:");
-	// while (0 < waitpid(-1, NULL, WNOHANG));               // dwm-cool-autostart
-	while (0 < (pid = waitpid(-1, NULL, WNOHANG))) {         // dwm-cool-autostart
-		pid_t *p, *lim;                                      // dwm-cool-autostart
-                                                             // dwm-cool-autostart
-		if (!(p = autostart_pids))                           // dwm-cool-autostart
-			continue;                                        // dwm-cool-autostart
-		lim = &p[autostart_len];                             // dwm-cool-autostart
-                                                             // dwm-cool-autostart
-		for (; p < lim; p++) {                               // dwm-cool-autostart
-			if (*p == pid) {                                 // dwm-cool-autostart
-				*p = -1;                                     // dwm-cool-autostart
-				break;                                       // dwm-cool-autostart
-			}                                                // dwm-cool-autostart
-		}                                                    // dwm-cool-autostart
-	}                                                        // dwm-cool-autostart
+	// while (0 < waitpid(-1, NULL, WNOHANG));                // dwm-cool-autostart
+	while (0 < (pid = waitpid(-1, NULL, WNOHANG))) {          // dwm-cool-autostart
+		pid_t *p, *lim;                                       // dwm-cool-autostart
+                                                              // dwm-cool-autostart
+		if (!(p = autostart_pids))                            // dwm-cool-autostart
+			continue;                                         // dwm-cool-autostart
+		lim = &p[autostart_len];                              // dwm-cool-autostart
+                                                              // dwm-cool-autostart
+		for (; p < lim; p++) {                                // dwm-cool-autostart
+			if (*p == pid) {                                  // dwm-cool-autostart
+				*p = -1;                                      // dwm-cool-autostart
+				break;                                        // dwm-cool-autostart
+			}                                                 // dwm-cool-autostart
+		}                                                     // dwm-cool-autostart
+	}                                                         // dwm-cool-autostart
 }
 
 void

@@ -51,12 +51,12 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      	     instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
-	{ "st",              NULL,       NULL,    0,            0,     	     1,		               -1 },                                                            // dwm-centerfirstwindow
-	{ "Gimp",            NULL,       NULL,    0,            1,           0,                    -1 },                                                            // dwm-centerfirstwindow
-	{ "Firefox",         NULL,       NULL,    1 << 8,       0,           0,                    -1 },                                                            // dwm-centerfirstwindow
-	{ NULL,		         "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 },                                                            // dwm-centerfirstwindow
-	{ NULL,		         "spra",     NULL,	  SPTAG(1),		1,			 0,                    -1 },                                                            // dwm-centerfirstwindow
-	{ NULL,		         "vivaldi",  NULL,	  SPTAG(2), 	0,			 0,                    -1 },                                                            // dwm-centerfirstwindow
+	{ "st",              NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow
+	{ "Gimp",            NULL,       NULL,    0,            1,           0,                    -1 }, // dwm-centerfirstwindow
+	{ "Firefox",         NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		         "spst",     NULL,	  SPTAG(0),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		         "spra",     NULL,	  SPTAG(1),		1,			 0,                    -1 }, // dwm-centerfirstwindow
+	{ NULL,		         "vivaldi",  NULL,	  SPTAG(2), 	0,			 0,                    -1 }, // dwm-centerfirstwindow
 };
 
 /* layout(s) */
@@ -68,22 +68,22 @@ static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscr
 static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
 static const float firstwindowsz    = 0.32; /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
 
-#include "layouts.c"                                                                  // layouts: dwm-fibonacci
+#include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-    { "∫_E^r(t)du",         tile },    /* first entry is default */
-    { "∅",                 NULL  },    /* no layout function means floating behavior */
+    { "∫_E^r(t)du",         tile }, /* first entry is default */
+    { "∅",                 NULL  }, /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
-    { "∫_E^r(t)du",     lefttile },                                                     // dwm-leftstack
-	{ "∫_E^r(t)du",     tilewide },                                                     // dwm-tilewide
-	{ "f:x->y",          bstack  },                                                     // dwm-bottomstack
-	{ "g:y->x",     bstackhoriz  },                                                     // dwm-bottomstack
-    { "∫_E^r(t)du",       spiral },                                                     // dwm-fibonacci
-    { "∫_E^r(t)du",      dwindle },                                                     // dwm-fibonacci
-    { "∫_E^r(t)du",  gaplessgrid },                                                     // dwm-gaplessgrid
-	{ "∫_E^r(t)du",         deck },                                                     // dwm-deck-double
-	{ "∫_E^r(t)du",       tatami },                                                     // dwm-tatami
-	{ NULL,                NULL },                                                     // dwm-cyclelayouts
+    { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
+	{ "∫_E^r(t)du",     tilewide }, // dwm-tilewide
+	{ "f:x->y",          bstack  }, // dwm-bottomstack
+	{ "g:y->x",     bstackhoriz  }, // dwm-bottomstack
+    { "∫_E^r(t)du",       spiral }, // dwm-fibonacci
+    { "∫_E^r(t)du",      dwindle }, // dwm-fibonacci
+    { "∫_E^r(t)du",  gaplessgrid }, // dwm-gaplessgrid
+	{ "∫_E^r(t)du",         deck }, // dwm-deck-double
+	{ "∫_E^r(t)du",       tatami }, // dwm-tatami
+	{ NULL,                NULL },  // dwm-cyclelayouts
 };
 
 /* key definitions */
@@ -142,9 +142,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,           			XK_apostrophe, togglescratch,  {.ui = 0 } },     // dwm-scratchpads
-	{ MODKEY,            			XK_u,	       togglescratch,  {.ui = 1 } },     // dwm-scratchpads
-	{ MODKEY,            			XK_v,	       togglescratch,  {.ui = 2 } },     // dwm-scratchpads
+	{ MODKEY,           			XK_apostrophe, togglescratch,  {.ui = 0 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_u,	       togglescratch,  {.ui = 1 } }, // dwm-scratchpads
+	{ MODKEY,            			XK_v,	       togglescratch,  {.ui = 2 } }, // dwm-scratchpads
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -167,8 +167,8 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-//  { ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },                    // dwm-scratchpads
-	{ ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} },                    // dwm-scratchpads
+//  { ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} }, // dwm-scratchpads
+	{ ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} }, // dwm-scratchpads
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
