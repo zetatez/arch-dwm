@@ -2,7 +2,7 @@
 
  // dwm-centerfirstwindow
 void
-centerfirstwindow(int n) {
+centerfirstwindow() {
     if (!mcenterfirstwindow) { return; }
 
     float fwszw,fwszh = 0.5;
@@ -11,12 +11,13 @@ centerfirstwindow(int n) {
     fwszh = (firstwindowszh > 0.8) ? 0.8 : firstwindowszh;
     fwszh = (firstwindowszh < 0.2) ? 0.2 : firstwindowszh;
 
-	if (n == 1 && selmon->sel->CenterThisWindow)
+	if (selmon->sel->CenterThisWindow)
         resizeclient(selmon->sel,
                 (selmon->mw - selmon->mw * fwszw) / 2,
                 (selmon->mh - selmon->mh * fwszh) / 2,
                 selmon->mw * fwszw,
                 selmon->mh * fwszh);
+    return;
 }
 
 /* dwm-fibonacci ------------------------------------------------------------ */
@@ -28,6 +29,8 @@ fibonacci(Monitor *mon, int s) {
     for(n = 0, c = nexttiled(mon->clients); c; c = nexttiled(c->next), n++);
     if(n == 0)
         return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
 
     nx = mon->wx;
     ny = 0;
@@ -75,8 +78,6 @@ fibonacci(Monitor *mon, int s) {
         }
         resize(c, nx, ny, nw - 2 * c->bw, nh - 2 * c->bw, False);
     }
-
-    centerfirstwindow(n);
 }
                                                                              
 void
@@ -98,6 +99,8 @@ gaplessgrid(Monitor *m) {
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
 	if(n == 0)
 		return;
+    
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
                                                                                     
 	/* grid dimensions */
 	for(cols = 0; cols <= n/2; cols++)
@@ -124,8 +127,6 @@ gaplessgrid(Monitor *m) {
 			cn++;
 		}
 	}
-    
-    centerfirstwindow(n);
 }
                                                                                     
 /* dwm-lefttile ------------------------------------------------------------ */
@@ -138,6 +139,8 @@ lefttile(Monitor *m)
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
 
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
@@ -157,8 +160,6 @@ lefttile(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
-
-    centerfirstwindow(n);
 }
 
 /* dwm-bottomstack ------------------------------------------------------------ */
@@ -171,6 +172,9 @@ bstack(Monitor *m) {
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
+                                                                                //
 	if (n > m->nmaster) {
 		mh = m->nmaster ? m->mfact * m->wh : 0;
 		tw = m->ww / (n - m->nmaster);
@@ -192,8 +196,6 @@ bstack(Monitor *m) {
 				tx += WIDTH(c);
 		}
 	}
-    
-    centerfirstwindow(n);
 }
 
 static void
@@ -205,6 +207,9 @@ bstackhoriz(Monitor *m) {
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
+
 	if (n > m->nmaster) {
 		mh = m->nmaster ? m->mfact * m->wh : 0;
 		th = (m->wh - mh) / (n - m->nmaster);
@@ -224,8 +229,6 @@ bstackhoriz(Monitor *m) {
 				ty += HEIGHT(c);
 		}
 	}
-
-    centerfirstwindow(n);
 }
 
 /* dwm-deck-double ------------------------------------------------------------ */
@@ -238,6 +241,8 @@ deck(Monitor *m) {
     if(n == 0)
         return;
 
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
+
     if(n > m->nmaster)
         mw = m->nmaster ? m->ww * m->mfact : 0;
     else
@@ -248,8 +253,6 @@ deck(Monitor *m) {
             resize(c, m->wx, m->wy, mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
         else
             resize(c, m->wx + mw, m->wy, m->ww - mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
-
-    centerfirstwindow(n);
 }
 
 /* dwm-tilewide ------------------------------------------------------------ */
@@ -262,6 +265,9 @@ tilewide(Monitor *m)
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
+
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 	else
@@ -279,8 +285,6 @@ tilewide(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
-
-    centerfirstwindow(n);
 }
 
 /* dwm-tatami ------------------------------------------------------------ */
@@ -294,6 +298,8 @@ tatami(Monitor *m) {
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), ++n);
 	if(n == 0)
 		return;
+
+    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
 	
 	nx = m->wx;
 	ny = 0;
@@ -440,6 +446,4 @@ tatami(Monitor *m) {
 		resize(c, tnx, tny, tnw - 2 * c->bw, tnh - 2 * c->bw, False);
 		}
 	}
-
-    centerfirstwindow(n);
 }
