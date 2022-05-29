@@ -60,7 +60,7 @@ static const Rule rules[] = {
 	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
 	{ "Gimp",                NULL,       NULL,    0,            0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
 	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ NULL,		             "spst",     NULL,	  SPTAG(0),		0,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 1,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
 	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		0,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
     { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
     { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
@@ -76,14 +76,18 @@ static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscr
 static const int mcenterfirstwindow = 1;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
 static const float firstwindowszw   = 0.64; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
 static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */ // dwm-centerfistwindow
+static const float cakefact         = 0.70; /* factor of focus above area size [0.05..0.95] */
+static const float cakewindowszw    = 0.64; /* factor of cake center window size width  [0.20, 0.80] */ // dwm-cake my layout
+static const float cakewindowszh    = 0.48; /* factor of cake center window size height [0.20, 0.80] */ // dwm-cake my layout
 
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "f:x->y",          bstack  }, // dwm-bottomstack
-	{ "g:y->x",     bstackhoriz  }, // dwm-bottomstack
+	{ "cake",               cake }, // dwm-cake
+	{ "f:x->y",           bstack }, // dwm-bottomstack
+	{ "g:y->x",      bstackhoriz }, // dwm-bottomstack
     { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
-    { "∅",                 NULL  }, /* no layout function means floating behavior */
+    { "∅",                  NULL }, /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
     { "∫_E^r(t)du",         tile }, /* first entry is default */
 	{ "∫_E^r(t)du",     tilewide }, // dwm-tilewide
@@ -92,7 +96,7 @@ static const Layout layouts[] = {
     { "∫_E^r(t)du",  gaplessgrid }, // dwm-gaplessgrid
 	{ "∫_E^r(t)du",         deck }, // dwm-deck-double
 	{ "∫_E^r(t)du",       tatami }, // dwm-tatami
-	{ NULL,                NULL },  // dwm-cyclelayouts
+	{ NULL,                NULL  }, // dwm-cyclelayouts
 };
 
 /* key definitions */
@@ -128,18 +132,19 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[0]} },  // bstack      dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },  // bstackhoriz dwm-bottomstack
-    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[2]} },  // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[3]} },  // no layout function means floating behavior
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[4]} },  // monocle
-	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[5]} },  // tile
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[6]} },  // tilewide    dwm-tilewide
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[7]} },  // sprial      dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[8]} },  // dwindle     dwm-fibonacci
-    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[9]} },  // gaplessgrid dwm-gaplessgrid
-	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[10]} }, // deck        dwm-deck-double
-	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[11]} }, // tatami      dwm-tatami
+	{ MODKEY,                       XK_n,      setlayout,      {.v = &layouts[0]} },  // cake
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[1]} },  // bstack      dwm-bottomstack
+	{ MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[2]} },  // bstackhoriz dwm-bottomstack
+    { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[3]} },  // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[4]} },  // no layout function means floating behavior
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[5]} },  // monocle
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[6]} },  // tile
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[7]} },  // tilewide    dwm-tilewide
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[8]} },  // sprial      dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[9]} },  // dwindle     dwm-fibonacci
+    { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[10]} }, // gaplessgrid dwm-gaplessgrid
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[11]} }, // deck        dwm-deck-double
+	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[12]} }, // tatami      dwm-tatami
 	{ MODKEY|ControlMask,		    XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },

@@ -20,6 +20,73 @@ centerfirstwindow() {
     return;
 }
 
+/* dwm-cake ------------------------------------------------------------ */
+void
+cake(Monitor *m) {
+	unsigned int n, i, cx, cy, cw, ch;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+    
+    float cwszw,cwszh,cfact;
+
+    cfact = (cakefact > 0.8) ? 0.8 : cakefact;
+    cfact = (cakefact < 0.2) ? 0.2 : cakefact;
+
+    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
+    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
+    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
+    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
+
+    cwszh = (cwszh > cfact) ? cfact : cwszh;
+
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i < 1) {
+            if (n != 1 && selmon->sel->CenterThisWindow) {
+                cw = m->ww * cwszw;
+                ch = m->wh * cwszh;
+                cx = m->ww/2 - cw/2;
+                cy = m->wy + m->wh * cfact - ch;
+            }
+            
+            if (n != 1 && !selmon->sel->CenterThisWindow) {
+                cw = m->ww;
+                ch = m->wh * cfact;
+                cx = 0;
+                cy = m->wy;
+            }
+
+            if (n == 1 && selmon->sel->CenterThisWindow) {
+                cw = m->ww * cwszw;
+                ch = m->wh * cwszh;
+                cx = m->ww/2 - cw/2;
+                cy = m->wy + m->wh * cfact - ch;
+            }
+
+            if (n == 1 && !selmon->sel->CenterThisWindow) {
+                cw = m->ww;
+                ch = m->wh ;
+                cx = 0;
+                cy = m->wy;
+            }
+        } else if (i == n-1 && n != 2) {
+            cw = m->ww * cwszw * 0.7;;
+            ch = m->wh * (cfact - cwszh);
+            cx = m->ww/2 - cw/2;
+            cy = m->wy;
+        } else {
+            cw = m->ww;
+            ch = m->wh * (1 - cfact);
+            cx = 0;
+            cy = m->wy + m->wh * cfact;
+        }
+       
+		resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, False);
+	}
+}
+
 /* dwm-fibonacci ------------------------------------------------------------ */
 void
 fibonacci(Monitor *mon, int s) {
