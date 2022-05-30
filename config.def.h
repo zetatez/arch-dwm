@@ -57,7 +57,8 @@ static const Rule rules[] = {
 	 */
 	/* class      	         instance    title    tags mask     isfloating   CenterThisWindow?    isterminal    noswallow    monitor */
 	{ "st",                  NULL,       NULL,    0,            0,     	     1,		              1,             1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
-	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		              0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		              1,             1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "vimb",                NULL,       NULL,    0,            0,     	     0,		              0,            -1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
 	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		              0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
 	{ "Gimp",                NULL,       NULL,    0,            1,           0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
 	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                   0,            -1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
