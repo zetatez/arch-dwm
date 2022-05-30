@@ -40,6 +40,12 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
+#include <X11/Xlib-xcb.h> // dwm-swallow
+#include <xcb/res.h>      // dwm-swallow
+#ifdef __OpenBSD__        // dwm-swallow
+#include <sys/sysctl.h>   // dwm-swallow
+#include <kvm.h>          // dwm-swallow
+#endif /* __OpenBSD */    // dwm-swallow
 
 #include "drw.h"
 #include "util.h"
@@ -99,9 +105,12 @@ struct Client {
 	unsigned int tags;
 // 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;                             // dwm-sticky
 // 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;                   // dwm-sticky            // dwm-centerfirstwindow
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow; // dwm-centerfirstwindow
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow; // dwm-centerfirstwindow // dwm-swallow
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, CenterThisWindow, isterminal, noswallow;   // dwm-swallow
+	pid_t pid;                                                                                                                  // dwm-swallow
 	Client *next;
 	Client *snext;
+	Client *swallowing;                                                                                                         // dwm-swallow
 	Monitor *mon;
 	Window win;
 };
@@ -146,6 +155,8 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int CenterThisWindow; // dwm-centerfirstwindow
+	int isterminal; // dwm-swallow
+	int noswallow;  // dwm-swallow
 	int monitor;
 } Rule;
 
@@ -246,6 +257,11 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void autostart_exec(void); // dwm-cool-autostart
 static void cyclelayout(const Arg *arg);
+static pid_t getparentprocess(pid_t p);     // dwm-swallow
+static int isdescprocess(pid_t p, pid_t c); // dwm-swallow
+static Client *swallowingclient(Window w);  // dwm-swallow
+static Client *termforwin(const Client *c); // dwm-swallow
+static pid_t winpid(Window w);              // dwm-swallow
 
 /* variables */
 static const char broken[] = "broken";
@@ -280,6 +296,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static xcb_connection_t *xcon; // dwm-swallow
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -339,6 +356,8 @@ applyrules(Client *c)
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
+			c->isterminal = r->isterminal; // dwm-swallow
+			c->noswallow  = r->noswallow;  // dwm-swallow
 			c->isfloating = r->isfloating;
 			c->CenterThisWindow = r->CenterThisWindow;                                                // dwm-centerfirstwindow
 			c->tags |= r->tags;
@@ -463,6 +482,53 @@ attachstack(Client *c)
 	c->snext = c->mon->stack;
 	c->mon->stack = c;
 }
+
+void                                                        // dwm-swallow
+swallow(Client *p, Client *c)                               // dwm-swallow
+{                                                           // dwm-swallow
+                                                            // dwm-swallow
+	if (c->noswallow || c->isterminal)                      // dwm-swallow
+		return;                                             // dwm-swallow
+	if (c->noswallow && !swallowfloating && c->isfloating)  // dwm-swallow
+		return;                                             // dwm-swallow
+                                                            // dwm-swallow
+	detach(c);                                              // dwm-swallow
+	detachstack(c);                                         // dwm-swallow
+                                                            // dwm-swallow
+	setclientstate(c, WithdrawnState);                      // dwm-swallow
+	XUnmapWindow(dpy, p->win);                              // dwm-swallow
+                                                            // dwm-swallow
+	p->swallowing = c;                                      // dwm-swallow
+	c->mon = p->mon;                                        // dwm-swallow
+                                                            // dwm-swallow
+	Window w = p->win;                                      // dwm-swallow
+	p->win = c->win;                                        // dwm-swallow
+	c->win = w;                                             // dwm-swallow
+	updatetitle(p);                                         // dwm-swallow
+	XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h); // dwm-swallow
+	arrange(p->mon);                                        // dwm-swallow
+	configure(p);                                           // dwm-swallow
+	updateclientlist();                                     // dwm-swallow
+}                                                           // dwm-swallow
+
+void                                                        // dwm-swallow
+unswallow(Client *c)                                        // dwm-swallow
+{                                                           // dwm-swallow
+	c->win = c->swallowing->win;                            // dwm-swallow
+                                                            // dwm-swallow
+	free(c->swallowing);                                    // dwm-swallow
+	c->swallowing = NULL;                                   // dwm-swallow
+                                                            // dwm-swallow
+	/* unfullscreen the client */                           // dwm-swallow
+	setfullscreen(c, 0);                                    // dwm-swallow
+	updatetitle(c);                                         // dwm-swallow
+	arrange(c->mon);                                        // dwm-swallow
+	XMapWindow(dpy, c->win);                                // dwm-swallow
+	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h); // dwm-swallow
+	setclientstate(c, NormalState);                         // dwm-swallow
+	focus(NULL);                                            // dwm-swallow
+	arrange(c->mon);                                        // dwm-swallow
+}                                                           // dwm-swallow
 
 void
 buttonpress(XEvent *e)
@@ -704,6 +770,8 @@ destroynotify(XEvent *e)
 
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
+	else if ((c = swallowingclient(ev->window))) // dwm-swallow
+		unmanage(c->swallowing, 1);              // dwm-swallow
 }
 
 void
@@ -1072,12 +1140,14 @@ killclient(const Arg *arg)
 void
 manage(Window w, XWindowAttributes *wa)
 {
-	Client *c, *t = NULL;
+// 	Client *c, *t = NULL;               // dwm-swallow
+	Client *c, *t = NULL, *term = NULL; // dwm-swallow
 	Window trans = None;
 	XWindowChanges wc;
 
 	c = ecalloc(1, sizeof(Client));
 	c->win = w;
+	c->pid = winpid(w); // dwm-swallow
 	/* geometry */
 	c->x = c->oldx = wa->x;
 	c->y = c->oldy = wa->y;
@@ -1092,6 +1162,7 @@ manage(Window w, XWindowAttributes *wa)
 	} else {
 		c->mon = selmon;
 		applyrules(c);
+		term = termforwin(c); // dwm-swallow
 	}
 
 	if (c->x + WIDTH(c) > c->mon->mx + c->mon->mw)
@@ -1128,6 +1199,8 @@ manage(Window w, XWindowAttributes *wa)
 	c->mon->sel = c;
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
+	if (term)             // dwm-swallow
+		swallow(term, c); // dwm-swallow
 	focus(NULL);
 }
 
@@ -1889,6 +1962,20 @@ unmanage(Client *c, int destroyed)
 	Monitor *m = c->mon;
 	XWindowChanges wc;
 
+ 	if (c->swallowing) {                  // dwm-swallow
+ 		unswallow(c);                     // dwm-swallow
+ 		return;                           // dwm-swallow
+ 	}                                     // dwm-swallow
+                                          // dwm-swallow
+ 	Client *s = swallowingclient(c->win); // dwm-swallow
+ 	if (s) {                              // dwm-swallow
+ 		free(s->swallowing);              // dwm-swallow
+ 		s->swallowing = NULL;             // dwm-swallow
+ 		arrange(m);                       // dwm-swallow
+ 		focus(NULL);                      // dwm-swallow
+ 		return;                           // dwm-swallow
+ 	}                                     // dwm-swallow
+
 	detach(c);
 	detachstack(c);
 	if (!destroyed) {
@@ -1903,9 +1990,15 @@ unmanage(Client *c, int destroyed)
 		XUngrabServer(dpy);
 	}
 	free(c);
-	focus(NULL);
-	updateclientlist();
-	arrange(m);
+//	focus(NULL);            // dwm-swallow
+//	updateclientlist();     // dwm-swallow
+//	arrange(m);             // dwm-swallow
+                            // dwm-swallow
+	if (!s) {               // dwm-swallow
+		arrange(m);         // dwm-swallow
+		focus(NULL);        // dwm-swallow
+		updateclientlist(); // dwm-swallow
+	}                       // dwm-swallow
 }
 
 void
@@ -2169,6 +2262,136 @@ view(const Arg *arg)
 	arrange(selmon);
 }
 
+pid_t                                                                                                                                                              // dwm-swallow
+winpid(Window w)                                                                                                                                                   // dwm-swallow
+{                                                                                                                                                                  // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	pid_t result = 0;                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#ifdef __linux__                                                                                                                                                   // dwm-swallow
+	xcb_res_client_id_spec_t spec = {0};                                                                                                                           // dwm-swallow
+	spec.client = w;                                                                                                                                               // dwm-swallow
+	spec.mask = XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID;                                                                                                           // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	xcb_generic_error_t *e = NULL;                                                                                                                                 // dwm-swallow
+	xcb_res_query_client_ids_cookie_t c = xcb_res_query_client_ids(xcon, 1, &spec);                                                                                // dwm-swallow
+	xcb_res_query_client_ids_reply_t *r = xcb_res_query_client_ids_reply(xcon, c, &e);                                                                             // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	if (!r)                                                                                                                                                        // dwm-swallow
+		return (pid_t)0;                                                                                                                                           // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	xcb_res_client_id_value_iterator_t i = xcb_res_query_client_ids_ids_iterator(r);                                                                               // dwm-swallow
+	for (; i.rem; xcb_res_client_id_value_next(&i)) {                                                                                                              // dwm-swallow
+		spec = i.data->spec;                                                                                                                                       // dwm-swallow
+		if (spec.mask & XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID) {                                                                                                 // dwm-swallow
+			uint32_t *t = xcb_res_client_id_value_value(i.data);                                                                                                   // dwm-swallow
+			result = *t;                                                                                                                                           // dwm-swallow
+			break;                                                                                                                                                 // dwm-swallow
+		}                                                                                                                                                          // dwm-swallow
+	}                                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	free(r);                                                                                                                                                       // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	if (result == (pid_t)-1)                                                                                                                                       // dwm-swallow
+		result = 0;                                                                                                                                                // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#endif /* __linux__ */                                                                                                                                             // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#ifdef __OpenBSD__                                                                                                                                                 // dwm-swallow
+        Atom type;                                                                                                                                                 // dwm-swallow
+        int format;                                                                                                                                                // dwm-swallow
+        unsigned long len, bytes;                                                                                                                                  // dwm-swallow
+        unsigned char *prop;                                                                                                                                       // dwm-swallow
+        pid_t ret;                                                                                                                                                 // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+        if (XGetWindowProperty(dpy, w, XInternAtom(dpy, "_NET_WM_PID", 0), 0, 1, False, AnyPropertyType, &type, &format, &len, &bytes, &prop) != Success || !prop) // dwm-swallow
+               return 0;                                                                                                                                           // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+        ret = *(pid_t*)prop;                                                                                                                                       // dwm-swallow
+        XFree(prop);                                                                                                                                               // dwm-swallow
+        result = ret;                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#endif /* __OpenBSD__ */                                                                                                                                           // dwm-swallow
+	return result;                                                                                                                                                 // dwm-swallow
+}                                                                                                                                                                  // dwm-swallow
+
+pid_t                                                                                                                                                              // dwm-swallow
+getparentprocess(pid_t p)                                                                                                                                          // dwm-swallow
+{                                                                                                                                                                  // dwm-swallow
+	unsigned int v = 0;                                                                                                                                            // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#ifdef __linux__                                                                                                                                                   // dwm-swallow
+	FILE *f;                                                                                                                                                       // dwm-swallow
+	char buf[256];                                                                                                                                                 // dwm-swallow
+	snprintf(buf, sizeof(buf) - 1, "/proc/%u/stat", (unsigned)p);                                                                                                  // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	if (!(f = fopen(buf, "r")))                                                                                                                                    // dwm-swallow
+		return 0;                                                                                                                                                  // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	fscanf(f, "%*u %*s %*c %u", &v);                                                                                                                               // dwm-swallow
+	fclose(f);                                                                                                                                                     // dwm-swallow
+#endif /* __linux__*/                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+#ifdef __OpenBSD__                                                                                                                                                 // dwm-swallow
+	int n;                                                                                                                                                         // dwm-swallow
+	kvm_t *kd;                                                                                                                                                     // dwm-swallow
+	struct kinfo_proc *kp;                                                                                                                                         // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	kd = kvm_openfiles(NULL, NULL, NULL, KVM_NO_FILES, NULL);                                                                                                      // dwm-swallow
+	if (!kd)                                                                                                                                                       // dwm-swallow
+		return 0;                                                                                                                                                  // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	kp = kvm_getprocs(kd, KERN_PROC_PID, p, sizeof(*kp), &n);                                                                                                      // dwm-swallow
+	v = kp->p_ppid;                                                                                                                                                // dwm-swallow
+#endif /* __OpenBSD__ */                                                                                                                                           // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	return (pid_t)v;                                                                                                                                               // dwm-swallow
+}                                                                                                                                                                  // dwm-swallow
+
+int                                                                                                                                                                // dwm-swallow
+isdescprocess(pid_t p, pid_t c)                                                                                                                                    // dwm-swallow
+{                                                                                                                                                                  // dwm-swallow
+	while (p != c && c != 0)                                                                                                                                       // dwm-swallow
+		c = getparentprocess(c);                                                                                                                                   // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	return (int)c;                                                                                                                                                 // dwm-swallow
+}                                                                                                                                                                  // dwm-swallow
+
+Client *                                                                                                                                                           // dwm-swallow
+termforwin(const Client *w)                                                                                                                                        // dwm-swallow
+{                                                                                                                                                                  // dwm-swallow
+	Client *c;                                                                                                                                                     // dwm-swallow
+	Monitor *m;                                                                                                                                                    // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	if (!w->pid || w->isterminal)                                                                                                                                  // dwm-swallow
+		return NULL;                                                                                                                                               // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	for (m = mons; m; m = m->next) {                                                                                                                               // dwm-swallow
+		for (c = m->clients; c; c = c->next) {                                                                                                                     // dwm-swallow
+			if (c->isterminal && !c->swallowing && c->pid && isdescprocess(c->pid, w->pid))                                                                        // dwm-swallow
+				return c;                                                                                                                                          // dwm-swallow
+		}                                                                                                                                                          // dwm-swallow
+	}                                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	return NULL;                                                                                                                                                   // dwm-swallow
+}                                                                                                                                                                  // dwm-swallow
+
+Client *                                                                                                                                                           // dwm-swallow
+swallowingclient(Window w)                                                                                                                                         // dwm-swallow
+{                                                                                                                                                                  // dwm-swallow
+	Client *c;                                                                                                                                                     // dwm-swallow
+	Monitor *m;                                                                                                                                                    // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	for (m = mons; m; m = m->next) {                                                                                                                               // dwm-swallow
+		for (c = m->clients; c; c = c->next) {                                                                                                                     // dwm-swallow
+			if (c->swallowing && c->swallowing->win == w)                                                                                                          // dwm-swallow
+				return c;                                                                                                                                          // dwm-swallow
+		}                                                                                                                                                          // dwm-swallow
+	}                                                                                                                                                              // dwm-swallow
+                                                                                                                                                                   // dwm-swallow
+	return NULL;                                                                                                                                                   // dwm-swallow
+}                                                                                                                                                                  // dwm-swallow
+
 Client *
 wintoclient(Window w)
 {
@@ -2277,11 +2500,14 @@ main(int argc, char *argv[])
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
+	if (!(xcon = XGetXCBConnection(dpy)))                 // dwm-swallow
+		die("dwm: cannot get xcb connection\n");          // dwm-swallow
 	checkotherwm();
-	autostart_exec();                                   // dwm-cool-autostart
+	autostart_exec();                                     // dwm-cool-autostart
 	setup();
 #ifdef __OpenBSD__
-	if (pledge("stdio rpath proc exec", NULL) == -1)
+// 	if (pledge("stdio rpath proc exec", NULL) == -1)      // dwm-swallow
+	if (pledge("stdio rpath proc exec ps", NULL) == -1)   // dwm-swallow
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();

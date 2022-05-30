@@ -3,6 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 0;        /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */  // dwm-swallow
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
@@ -54,17 +55,17 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      	         instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
-	{ "st",                  NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		               -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ "Gimp",                NULL,       NULL,    0,            0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 1,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		0,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-    { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-    { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
-	{ NULL,		             "vivaldi",  NULL,	  SPTAG(4), 	1,			 0,                    -1 }, // dwm-centerfirstwindow // dwm-scratchpads
+	/* class      	         instance    title    tags mask     isfloating   CenterThisWindow?    isterminal    noswallow    monitor */
+	{ "st",                  NULL,       NULL,    0,            0,     	     1,		              1,             1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "kitty",               NULL,       NULL,    0,            0,     	     1,		              0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		              0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "Gimp",                NULL,       NULL,    0,            1,           0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                   0,            -1,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ NULL,		             "spst",     NULL,	  SPTAG(0),		1,			 1,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ NULL,		             "spvimfzf", NULL,	  SPTAG(1),		0,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+    { NULL,		             "obsidian", NULL,	  SPTAG(2),		1,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+    { NULL,		             "kitty",    NULL,	  SPTAG(3),		1,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
+	{ NULL,		             "vivaldi",  NULL,	  SPTAG(4), 	1,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-scratchpads // dwm-swallow
 };
 
 /* layout(s) */
