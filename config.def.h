@@ -69,8 +69,8 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact            = 0.90; /* factor of master area size [0.05..0.95] */
-static const int nmaster            = 2;    /* number of clients in master area */
+static const float mfact            = 0.50; /* factor of master area size [0.05..0.95] */
+static const int nmaster            = 1;    /* number of clients in master area */
 // static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
