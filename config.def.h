@@ -134,11 +134,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return,     zoom,           {0} },
 	{ MODKEY,                       XK_Tab,        view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,     {0} },
-	{ MODKEY,                       XK_n,          setlayout,      {.v = &layouts[0]} },  // cake
+	{ MODKEY,                       XK_f,          setlayout,      {.v = &layouts[0]} },  // cake
 	{ MODKEY,                       XK_e,          setlayout,      {.v = &layouts[1]} },  // bstack      dwm-bottomstack
 	{ MODKEY|ShiftMask,             XK_e,          setlayout,      {.v = &layouts[2]} },  // bstackhoriz dwm-bottomstack
     { MODKEY,                       XK_t,          setlayout,      {.v = &layouts[3]} },  // lefttile    dwm-lefttile
-	{ MODKEY,                       XK_f,          setlayout,      {.v = &layouts[4]} },  // no layout function means floating behavior
+	{ MODKEY|ShiftMask,             XK_f,          setlayout,      {.v = &layouts[4]} },  // no layout function means floating behavior
 	{ MODKEY,                       XK_m,          setlayout,      {.v = &layouts[5]} },  // monocle
 	{ MODKEY|ShiftMask,             XK_t,          setlayout,      {.v = &layouts[6]} },  // tile
 	{ MODKEY,                       XK_w,          setlayout,      {.v = &layouts[7]} },  // tilewide    dwm-tilewide
