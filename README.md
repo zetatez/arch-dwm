@@ -11,6 +11,7 @@
     - dwm-hide_vacant_tags-6.3.diff
     - dwm-leftstack-6.2.diff
     - dwm-movestack-20211115-a786211.diff
+    - dwm-pertag-20200914-61bb8b2.diff
     - dwm-scratchpads-20200414-728d397b.diff
     - dwm-sticky-20160911-ab9571b.diff
     - dwm-swallow-20201211-61bb8b2.diff
