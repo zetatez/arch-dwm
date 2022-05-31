@@ -23,9 +23,9 @@ static const char *const autostart[] = {                               // dwm-co
 	"dwmstatus", "2>&1 >>/dev/null &", NULL,                           // dwm-cool-autostart
 // 	"picom", NULL,                                                     // dwm-cool-autostart
 	"dunst", NULL,                                                     // dwm-cool-autostart
-    "warpd", NULL,                                                     // dwm-cool-autostart
+    "/usr/bin/warpd", NULL,                                            // dwm-cool-autostart
     "sh", "-c", "pkill -9 trojan; cd ~/.trojan; ./trojan &; cd", NULL, // dwm-cool-autostart
-// 	"st", NULL,                                                        // dwm-cool-autostart
+//  	"st", NULL,                                                        // dwm-cool-autostart
 	NULL /* terminate */                                               // dwm-cool-autostart
 };                                                                     // dwm-cool-autostart
 
