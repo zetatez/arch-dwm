@@ -234,8 +234,9 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
-static void togglescratch(const Arg *arg); // dwm-scratchpads
-static void togglesticky(const Arg *arg);  // dwm-sticky
+static void togglescratch(const Arg *arg);    // dwm-scratchpads
+static void togglesticky(const Arg *arg);     // dwm-sticky
+static void togglefullscreen(const Arg *arg); // dwm-actualfullscreen
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -1949,6 +1950,14 @@ togglesticky(const Arg *arg)                        // dwm-sticky
     selmon->sel->issticky = !selmon->sel->issticky; // dwm-sticky
     arrange(selmon);                                // dwm-sticky
 }                                                   // dwm-sticky
+
+void                                                        // dwm-actualfullscreen
+togglefullscreen(const Arg *arg)                               // dwm-actualfullscreen
+{                                                           // dwm-actualfullscreen
+  if(selmon->sel)                                           // dwm-actualfullscreen
+	togglebar(NULL);                                        // dwm-actualfullscreen
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen); // dwm-actualfullscreen
+}                                                           // dwm-actualfullscreen
 
 void
 toggletag(const Arg *arg)
