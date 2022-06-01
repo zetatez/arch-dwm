@@ -146,18 +146,18 @@ static Key keys[] = {
 	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[8]} },  // sprial      dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[9]} },  // dwindle     dwm-fibonacci
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[10]} }, // gaplessgrid dwm-gaplessgrid
-	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[11]} }, // deck        dwm-deck-double
+	{ MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[11]} }, // deck        dwm-deck-double
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[12]} }, // tatami      dwm-tatami
-	{ MODKEY|ControlMask,		    XK_comma,      cyclelayout,       {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period,     cyclelayout,       {.i = +1 } },
+	{ MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
+	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY,                       XK_space,      setlayout,         {0} },
 	{ MODKEY|ShiftMask,             XK_space,      togglefloating,    {0} },
 	{ MODKEY|ShiftMask,             XK_s,          togglesticky,      {0} },                // dwm-sticky
 	{ MODKEY,                       XK_f,          togglefullscreen,  {0} },                // dwm-actualfullscreen
 	{ MODKEY,                       XK_0,          view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,               {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,      focusmon,          {.i = -1 } },
-	{ MODKEY,                       XK_period,     focusmon,          {.i = +1 } },
+	{ MODKEY|ControlMask,           XK_comma,      focusmon,          {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period,     focusmon,          {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,      tagmon,            {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,     tagmon,            {.i = +1 } },
     { MODKEY,                       XK_h,          shiftview,         {.i = -1 } }, // shiftview
