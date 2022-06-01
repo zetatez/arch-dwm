@@ -213,6 +213,13 @@ static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
 static void scan(void);
+static void scratchpad_add ();                        // dwm-scratchpad
+static void scratchpad_hide ();                       // dwm-scratchpad
+static _Bool scratchpad_last_showed_is_killed (void); // dwm-scratchpad
+static void scratchpad_remove ();                     // dwm-scratchpad
+static void scratchpad_show ();                       // dwm-scratchpad
+static void scratchpad_show_client (Client * c);      // dwm-scratchpad
+static void scratchpad_show_first (void);             // dwm-scratchpad
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
@@ -297,6 +304,10 @@ static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static xcb_connection_t *xcon; // dwm-swallow
 
+/* scratchpad */                                             // dwm-scratchpad
+# define SCRATCHPAD_MASK (1u << sizeof tags / sizeof * tags) // dwm-scratchpad
+static Client * scratchpad_last_showed = NULL;               // dwm-scratchpad
+
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
@@ -310,7 +321,8 @@ struct Pertag {                                                                 
 };                                                                                       // dwm-pertag
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
-struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+// struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; }; // dwm-scratchpad
+struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };    // dwm-scratchpad
 
 /* dwm will keep pid's of processes from autostart array and kill them at quit */
 static pid_t *autostart_pids;
@@ -379,7 +391,9 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-    c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+// 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];     // dwm-scratchpad
+	if (c->tags != SCRATCHPAD_MASK)                                                        // dwm-scratchpad
+		c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags]; // dwm-scratchpad
 }
 
 int
@@ -1564,6 +1578,100 @@ scan(void)
 	}
 }
 
+static void                                                                                           // dwm-scratchpad
+scratchpad_hide ()                                                                                    // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+    if (selmon -> sel) {                                                                              // dwm-scratchpad
+        selmon -> sel -> tags = SCRATCHPAD_MASK;                                                      // dwm-scratchpad
+        selmon -> sel -> isfloating = 1;                                                              // dwm-scratchpad
+        focus(NULL);                                                                                  // dwm-scratchpad
+        arrange(selmon);                                                                              // dwm-scratchpad
+    }                                                                                                 // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static _Bool                                                                                          // dwm-scratchpad
+scratchpad_last_showed_is_killed (void)                                                               // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+	_Bool killed = 1;                                                                                 // dwm-scratchpad
+	for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                                  // dwm-scratchpad
+		if (c == scratchpad_last_showed) {                                                            // dwm-scratchpad
+			killed = 0;                                                                               // dwm-scratchpad
+			break;                                                                                    // dwm-scratchpad
+		}                                                                                             // dwm-scratchpad
+	}                                                                                                 // dwm-scratchpad
+	return killed;                                                                                    // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static void                                                                                           // dwm-scratchpad
+scratchpad_remove ()                                                                                  // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+	if (selmon -> sel && scratchpad_last_showed != NULL && selmon -> sel == scratchpad_last_showed) { // dwm-scratchpad
+        selmon -> sel -> isfloating = 0;                                                              // dwm-scratchpad
+		scratchpad_last_showed = NULL;                                                                // dwm-scratchpad
+    }                                                                                                 // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static void                                                                                           // dwm-scratchpad
+scratchpad_show ()                                                                                    // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+	if (scratchpad_last_showed == NULL || scratchpad_last_showed_is_killed ())                        // dwm-scratchpad
+		scratchpad_show_first ();                                                                     // dwm-scratchpad
+	else {                                                                                            // dwm-scratchpad
+		if (scratchpad_last_showed -> tags != SCRATCHPAD_MASK) {                                      // dwm-scratchpad
+			scratchpad_last_showed -> tags = SCRATCHPAD_MASK;                                         // dwm-scratchpad
+			focus(NULL);                                                                              // dwm-scratchpad
+			arrange(selmon);                                                                          // dwm-scratchpad
+		}                                                                                             // dwm-scratchpad
+		else {                                                                                        // dwm-scratchpad
+			_Bool found_current = 0;                                                                  // dwm-scratchpad
+			_Bool found_next = 0;                                                                     // dwm-scratchpad
+			for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                          // dwm-scratchpad
+				if (found_current == 0) {                                                             // dwm-scratchpad
+					if (c == scratchpad_last_showed) {                                                // dwm-scratchpad
+						found_current = 1;                                                            // dwm-scratchpad
+						continue;                                                                     // dwm-scratchpad
+					}                                                                                 // dwm-scratchpad
+				}                                                                                     // dwm-scratchpad
+				else {                                                                                // dwm-scratchpad
+					if (c -> tags == SCRATCHPAD_MASK) {                                               // dwm-scratchpad
+						found_next = 1;                                                               // dwm-scratchpad
+						scratchpad_show_client (c);                                                   // dwm-scratchpad
+						break;                                                                        // dwm-scratchpad
+					}                                                                                 // dwm-scratchpad
+				}                                                                                     // dwm-scratchpad
+			}                                                                                         // dwm-scratchpad
+			if (found_next == 0) scratchpad_show_first ();                                            // dwm-scratchpad
+		}                                                                                             // dwm-scratchpad
+	}                                                                                                 // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static void                                                                                           // dwm-scratchpad
+scratchpad_add ()                                                                                     // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+    scratchpad_hide();                                                                                // dwm-scratchpad
+    scratchpad_show();                                                                               // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static void                                                                                           // dwm-scratchpad
+scratchpad_show_client (Client * c)                                                                   // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+	scratchpad_last_showed = c;                                                                       // dwm-scratchpad
+	c -> tags = selmon->tagset[selmon->seltags];                                                      // dwm-scratchpad
+	focus(c);                                                                                         // dwm-scratchpad
+	arrange(selmon);                                                                                  // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+                                                                                                      // dwm-scratchpad
+static void scratchpad_show_first (void)                                                              // dwm-scratchpad
+{                                                                                                     // dwm-scratchpad
+	for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                                  // dwm-scratchpad
+		if (c -> tags == SCRATCHPAD_MASK) {                                                           // dwm-scratchpad
+			scratchpad_show_client (c);                                                               // dwm-scratchpad
+			break;                                                                                    // dwm-scratchpad
+		}                                                                                             // dwm-scratchpad
+	}                                                                                                 // dwm-scratchpad
+}                                                                                                     // dwm-scratchpad
+
 void
 sendmon(Client *c, Monitor *m)
 {
@@ -2016,6 +2124,10 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
+
+	if (scratchpad_last_showed == c)   // dwm-scratchpad
+		scratchpad_last_showed = NULL; // dwm-scratchpad
+
 	free(c);
 //	focus(NULL);            // dwm-swallow
 //	updateclientlist();     // dwm-swallow
