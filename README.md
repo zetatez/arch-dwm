@@ -1,6 +1,8 @@
 [dwm](https://dwm.suckless.org/)
 
 - [Patches](https://dwm.suckless.org/patches)
+    - dwm-actualfullscreen-20211013-cb3f58a.diff
+    - dwm-bar-height-6.2.diff
     - dwm-bottomstack-20160719-56a31dc.diff
     - dwm-centerfirstwindow-6.2.diff
     - dwm-cool-autostart-6.2.diff
@@ -18,6 +20,7 @@
     - dwm-tatami-6.2.diff
     - dwm-tilewide-6.3.diff
     - shiftview.c
+
 
 # dwm - dynamic window manager
 dwm is an extremely fast, small, and dynamic window manager for X.
