@@ -105,8 +105,8 @@ struct Client {
 	unsigned int tags;
 // 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;                             // dwm-sticky
 // 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;                   // dwm-sticky            // dwm-centerfirstwindow
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerthiswindow; // dwm-centerfirstwindow // dwm-swallow
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerthiswindow, isterminal, noswallow;   // dwm-swallow
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerfirstwindow; // dwm-centerfirstwindow // dwm-swallow
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerfirstwindow, isterminal, noswallow;   // dwm-swallow
 	pid_t pid;                                                                                                                  // dwm-swallow
 	Client *next;
 	Client *snext;
@@ -157,7 +157,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
-	int centerthiswindow; // dwm-centerfirstwindow
+	int centerfirstwindow; // dwm-centerfirstwindow
 	int isterminal; // dwm-swallow
 	int noswallow;  // dwm-swallow
 	int monitor;
@@ -357,7 +357,7 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
-    c->centerthiswindow = 0;                                                                          // dwm-centerfirstwindow
+    c->centerfirstwindow = 0;                                                                          // dwm-centerfirstwindow
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -372,7 +372,7 @@ applyrules(Client *c)
 			c->isterminal = r->isterminal; // dwm-swallow
 			c->noswallow  = r->noswallow;  // dwm-swallow
 			c->isfloating = r->isfloating;
-			c->centerthiswindow = r->centerthiswindow;                                                // dwm-centerfirstwindow
+			c->centerfirstwindow = r->centerfirstwindow;                                                // dwm-centerfirstwindow
 			c->tags |= r->tags;
 			if ((r->tags & SPTAGMASK) && r->isfloating) {                                             // dwm-scratchpads
 				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);                                  // dwm-scratchpads

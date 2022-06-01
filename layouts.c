@@ -11,7 +11,7 @@ centerfirstwindow() {
     fwszh = (firstwindowszh > 0.8) ? 0.8 : firstwindowszh;
     fwszh = (firstwindowszh < 0.2) ? 0.2 : firstwindowszh;
 
-	if (selmon->sel->centerthiswindow)
+	if (selmon->sel->centerfirstwindow)
         resizeclient(selmon->sel,
                 (selmon->mw - selmon->mw * fwszw) / 2,
                 (selmon->mh - selmon->mh * fwszh) / 2,
@@ -44,28 +44,28 @@ cake(Monitor *m) {
 
 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
-            if (n != 1 && selmon->sel->centerthiswindow) {
+            if (n != 1 && selmon->sel->centerfirstwindow) {
                 cw = m->ww * cwszw;
                 ch = m->wh * cwszh;
                 cx = m->ww/2 - cw/2;
                 cy = m->wy + m->wh * cfact - ch;
             }
             
-            if (n != 1 && !selmon->sel->centerthiswindow) {
+            if (n != 1 && !selmon->sel->centerfirstwindow) {
                 cw = m->ww;
                 ch = m->wh * cfact;
                 cx = 0;
                 cy = m->wy;
             }
 
-            if (n == 1 && selmon->sel->centerthiswindow) {
+            if (n == 1 && selmon->sel->centerfirstwindow) {
                 cw = m->ww * cwszw;
                 ch = m->wh * cwszh;
                 cx = m->ww/2 - cw/2;
                 cy = m->wy + m->wh * cfact - ch;
             }
 
-            if (n == 1 && !selmon->sel->centerthiswindow) {
+            if (n == 1 && !selmon->sel->centerfirstwindow) {
                 cw = m->ww;
                 ch = m->wh ;
                 cx = 0;
