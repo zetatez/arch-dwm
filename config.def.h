@@ -135,18 +135,18 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return,     zoom,              {0} },
 	{ MODKEY,                       XK_Tab,        view,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,        {0} },
-	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[0]} },  // cake
+	{ MODKEY,                       XK_w,          setlayout,         {.v = &layouts[0]} },  // cake
 	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[1]} },  // bstack      dwm-bottomstack
 	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[2]} },  // bstackhoriz dwm-bottomstack
     { MODKEY,                       XK_t,          setlayout,         {.v = &layouts[3]} },  // lefttile    dwm-lefttile
 	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[4]} },  // no layout function means floating behavior
 	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[5]} },  // monocle
 	{ MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[6]} },  // tile
-	{ MODKEY,                       XK_w,          setlayout,         {.v = &layouts[7]} },  // tilewide    dwm-tilewide
+	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[7]} },  // tilewide    dwm-tilewide
 	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[8]} },  // sprial      dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[9]} },  // dwindle     dwm-fibonacci
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[10]} }, // gaplessgrid dwm-gaplessgrid
-	{ MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[11]} }, // deck        dwm-deck-double
+	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[11]} }, // deck        dwm-deck-double
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[12]} }, // tatami      dwm-tatami
 	{ MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
