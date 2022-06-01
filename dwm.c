@@ -61,11 +61,7 @@
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
-// #define TAGMASK                 ((1 << LENGTH(tags)) - 1)                     // dwm-scratchpads
-#define NUMTAGS					(LENGTH(tags) + LENGTH(scratchpads))             // dwm-scratchpads
-#define TAGMASK     			((1 << NUMTAGS) - 1)                             // dwm-scratchpads
-#define SPTAG(i) 				((1 << LENGTH(tags)) << (i))                     // dwm-scratchpads
-#define SPTAGMASK   			(((1 << LENGTH(scratchpads))-1) << LENGTH(tags)) // dwm-scratchpads
+#define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
 /* enums */
@@ -234,7 +230,6 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
-static void togglescratch(const Arg *arg);    // dwm-scratchpads
 static void togglesticky(const Arg *arg);     // dwm-sticky
 static void togglefullscreen(const Arg *arg); // dwm-actualfullscreen
 static void toggletag(const Arg *arg);
@@ -374,10 +369,6 @@ applyrules(Client *c)
 			c->isfloating = r->isfloating;
 			c->centerfirstwindow = r->centerfirstwindow;                                                // dwm-centerfirstwindow
 			c->tags |= r->tags;
-			if ((r->tags & SPTAGMASK) && r->isfloating) {                                             // dwm-scratchpads
-				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);                                  // dwm-scratchpads
-				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);                                 // dwm-scratchpads
-			}                                                                                         // dwm-scratchpads
 
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -388,8 +379,7 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-//  c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];                // dwm-scratchpads
-	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK); // dwm-scratchpads
+    c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
 int
@@ -1787,10 +1777,6 @@ showhide(Client *c)
 	if (!c)
 		return;
 	if (ISVISIBLE(c)) {
-		if ((c->tags & SPTAGMASK) && c->isfloating) {             // dwm-scratchpads
-			c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);  // dwm-scratchpads
-			c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2); // dwm-scratchpads
-		}                                                         // dwm-scratchpads
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
@@ -1914,32 +1900,6 @@ togglefloating(const Arg *arg)
 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
 			selmon->sel->w, selmon->sel->h, 0);
 	arrange(selmon);
-}
-
-void                                                                              // dwm-scratchpads
-togglescratch(const Arg *arg)                                                     // dwm-scratchpads
-{                                                                                 // dwm-scratchpads
-	Client *c;                                                                    // dwm-scratchpads
-	unsigned int found = 0;                                                       // dwm-scratchpads
-	unsigned int scratchtag = SPTAG(arg->ui);                                     // dwm-scratchpads
-	Arg sparg = {.v = scratchpads[arg->ui].cmd};                                  // dwm-scratchpads
-                                                                                  // dwm-scratchpads
-	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next); // dwm-scratchpads
-	if (found) {                                                                  // dwm-scratchpads
-		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;    // dwm-scratchpads
-		if (newtagset) {                                                          // dwm-scratchpads
-			selmon->tagset[selmon->seltags] = newtagset;                          // dwm-scratchpads
-			focus(NULL);                                                          // dwm-scratchpads
-			arrange(selmon);                                                      // dwm-scratchpads
-		}                                                                         // dwm-scratchpads
-		if (ISVISIBLE(c)) {                                                       // dwm-scratchpads
-			focus(c);                                                             // dwm-scratchpads
-			restack(selmon);                                                      // dwm-scratchpads
-		}                                                                         // dwm-scratchpads
-	} else {                                                                      // dwm-scratchpads
-		selmon->tagset[selmon->seltags] |= scratchtag;                            // dwm-scratchpads
-		spawn(&sparg);                                                            // dwm-scratchpads
-	}                                                                             // dwm-scratchpads
 }
 
 void                                                // dwm-sticky
