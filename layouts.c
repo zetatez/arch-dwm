@@ -231,7 +231,7 @@ lefttile(Monitor *m)
 
 /* dwm-bottomstack ------------------------------------------------------------ */
 static void
-bstack(Monitor *m) {
+bstackvertical(Monitor *m) {
 	int w, h, mh, mx, tx, ty, tw;
 	unsigned int i, n;
 	Client *c;
@@ -266,7 +266,7 @@ bstack(Monitor *m) {
 }
 
 static void
-bstackhoriz(Monitor *m) {
+bstackhorizontal(Monitor *m) {
 	int w, mh, mx, tx, ty, th;
 	unsigned int i, n;
 	Client *c;

@@ -86,8 +86,8 @@ static const float cakewindowszh    = 0.48; /* factor of cake center window size
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "cake",               cake }, // dwm-cake
-	{ "f:x->y",           bstack }, // dwm-bottomstack
-	{ "g:y->x",      bstackhoriz }, // dwm-bottomstack
+	{ "f:x->y",   bstackvertical }, // dwm-bottomstack
+	{ "g:y->x",  bstackhorizontal }, // dwm-bottomstack
     { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
     { "∅",                  NULL }, /* no layout function means floating behavior */
     { "∫_E^r(t)du",      monocle },
