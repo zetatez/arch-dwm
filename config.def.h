@@ -137,8 +137,8 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_period,     focusmon,          {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,      tagmon,            {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,     tagmon,            {.i = +1 } },
-    { MODKEY,                       XK_h,          shiftview,         {.i = -1 } }, // shiftview
-    { MODKEY,                       XK_l,          shiftview,         {.i = +1 } }, // shiftview
+    { MODKEY|ControlMask,           XK_h,          shiftview,         {.i = -1 } }, // shiftview
+    { MODKEY|ControlMask,           XK_l,          shiftview,         {.i = +1 } }, // shiftview
  	{ MODKEY,                       XK_apostrophe, scratchpad_show,   {0} }, // dwm-scratchpad
  	{ MODKEY|ShiftMask,             XK_apostrophe, scratchpad_add,    {0} }, // dwm-scratchpad
  	{ MODKEY|ControlMask,           XK_apostrophe, scratchpad_remove, {0} }, // dwm-scratchpad
