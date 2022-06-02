@@ -18,7 +18,7 @@ centerfirstwindow(Monitor *m) {
 /* dwm-cake ------------------------------------------------------------ */
 void
 cake(Monitor *m) {
-	unsigned int n, i, cx, cy, cw, ch;
+	unsigned int n, i;
 	Client *c;
                                                                                     
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
@@ -40,45 +40,25 @@ cake(Monitor *m) {
 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
             if (n != 1 && m->sel->centerfirstwindow) {
-                cw = m->ww * cwszw;
-                ch = m->wh * cwszh;
-                cx = m->ww/2 - cw/2;
-                cy = m->wy + m->wh * cfact - ch;
+		        resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
             }
             
             if (n != 1 && !m->sel->centerfirstwindow) {
-                cw = m->ww;
-                ch = m->wh * cfact;
-                cx = 0;
-                cy = m->wy;
+	        	resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * mfact - 2 * c->bw, False);
             }
 
             if (n == 1 && m->sel->centerfirstwindow) {
-                cw = m->ww * cwszw;
-                ch = m->wh * cwszh;
-                cx = m->ww/2 - cw/2;
-                cy = m->wy + m->wh * cfact - ch;
+		        resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
             }
 
             if (n == 1 && !m->sel->centerfirstwindow) {
-                cw = m->ww;
-                ch = m->wh ;
-                cx = 0;
-                cy = m->wy;
+		        resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
             }
         } else if (i == n-1 && n != 2) {
-            cw = m->ww * cwszw * 0.7;;
-            ch = m->wh * (cfact - cwszh);
-            cx = m->ww/2 - cw/2;
-            cy = m->wy;
+		    resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False);
         } else {
-            cw = m->ww;
-            ch = m->wh * (1 - cfact);
-            cx = 0;
-            cy = m->wy + m->wh * cfact;
+		    resize(c, 0, m->wy + m->wh * cfact, m->ww - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
         }
-       
-		resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, False);
 	}
 }
 
