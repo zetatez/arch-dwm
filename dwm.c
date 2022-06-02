@@ -1965,8 +1965,8 @@ tile(Monitor *m)
 	if (n == 0)
 		return;
 
-    if(n == 1) { centerfirstwindow(); return; }                                // dwm-centerfirstwindow
-                                                                               //
+    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
+
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 	else
