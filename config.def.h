@@ -44,6 +44,7 @@ static const Rule rules[] = {
 	{ "Gimp",                NULL,       NULL,    0,            1,           0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
 	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                   0,            -1,          -1 }, // dwm-centerfirstwindow // dwm-swallow
     { "kitty",	             NULL,       NULL,	  0,		    0,			 1,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
+    { "vimb",	             NULL,       NULL,	  0,		    0,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
 };
 
 /* layout(s) */

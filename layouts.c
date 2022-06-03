@@ -185,12 +185,12 @@ cake(Monitor *m) {
 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
             if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * mfact - 2 * c->bw, False); }
+            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
             if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
             if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
-        } else if (i == n-1 && n != 2)                {
-		    resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False);
-        } else {
+        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
+		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
+        } else { // else always buttom
 		    resize(c, 0, m->wy + m->wh * cfact, m->ww - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
         }
 	}
