@@ -63,21 +63,21 @@ static const float cakewindowszh    = 0.48; /* factor of cake center window size
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "cake",               cake }, // dwm-cake
-	{ "f:x->y",   bstackvertical }, // dwm-bottomstack
-	{ "g:y->x",  bstackhorizontal }, // dwm-bottomstack
-    { "∫_E^r(t)du",     lefttile }, // dwm-leftstack
-    { "∅",                  NULL }, /* no layout function means floating behavior */
-    { "∫_E^r(t)du",      monocle },
-    { "∫_E^r(t)du",         tile }, /* first entry is default */
-	{ "∫_E^r(t)du",     tilewide }, // dwm-tilewide
-    { "∫_E^r(t)du",       spiral }, // dwm-fibonacci
-    { "∫_E^r(t)du",      dwindle }, // dwm-fibonacci
-    { "∫_E^r(t)du",  gaplessgrid }, // dwm-gaplessgrid
-	{ "∫_E^r(t)du",         deck }, // dwm-deck-double
-	{ "∫_E^r(t)du",       tatami }, // dwm-tatami
-	{ "logarithmicspiral",  logarithmicspiral }, // dwm-logarithmicspiral
-	{ NULL,                NULL  }, // dwm-cyclelayouts
+	{ "Cake",                            cake }, // dwm-cake
+	{ "Stack Vertical",        bstackvertical }, // dwm-bottomstack
+	{ "Stack Horizontal",    bstackhorizontal }, // dwm-bottomstack
+    { "Tile Left",                   tileleft }, // dwm-leftstack
+    { "∅",                               NULL }, /* no layout function means floating behavior */
+    { "Monocle",                      monocle },
+    { "Tile Right",                      tile }, /* first entry is default */
+	{ "Tile Wide",                   tilewide }, // dwm-tilewide
+    { "Fibonacci",                     spiral }, // dwm-fibonacci
+    { "Fibonacci",                    dwindle }, // dwm-fibonacci
+    { "Grid",                     gaplessgrid }, // dwm-gaplessgrid
+	{ "Deck",                            deck }, // dwm-deck-double
+	{ "Tatami",                        tatami }, // dwm-tatami
+	{ "Logarithmic Spiral", logarithmicspiral }, // dwm-logarithmicspiral
+	{ NULL,                             NULL  }, // dwm-cyclelayouts
 };
 
 /* key definitions */

@@ -307,7 +307,7 @@ gaplessgrid(Monitor *m) {
                                                                                     
 /* dwm-lefttile ------------------------------------------------------------ */
 void
-lefttile(Monitor *m)
+tileleft(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;
