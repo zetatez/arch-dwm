@@ -15,6 +15,151 @@ centerfirstwindow(Monitor *m) {
     return;
 }
 
+/* dwm-logarithmic-spiral ------------------------------------------------------------ */
+// control the shape of logarithmic spiral
+static const float logarithmicspiralstart = -50;
+static const float logarithmicspiralstop  = 50;
+static const float logarithmicspiralstep  = 0.1;    // control the interval of each window
+static const float logarithmicspiralalpha = 1;
+static const float logarithmicspiralkapa  = 0.050;  // control the interval of each window cycle: 0.02, 0.05, 0.025, 0.3063489(golden LS)
+static const int   logarithmicspirallen   = (const int) ((logarithmicspiralstop - logarithmicspiralstart )/logarithmicspiralstep);
+
+#include<math.h>
+void
+logarithmicspiral(Monitor *m) {
+	unsigned int n, idx;
+    float i, v, minx, maxx, miny, maxy;
+    float phi[logarithmicspirallen];
+
+    float x[logarithmicspirallen];
+    float y[logarithmicspirallen];
+
+    float ww[logarithmicspirallen];
+    float wh[logarithmicspirallen];
+    float wx[logarithmicspirallen];
+    float wy[logarithmicspirallen];
+
+	Client *c;
+                                                                             
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    for (idx = 0, i = logarithmicspiralstart; i < logarithmicspiralstop && idx < sizeof(phi) / sizeof(phi[0]); i += logarithmicspiralstep, phi[idx] = i, idx++);
+    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        v = logarithmicspiralalpha * exp(logarithmicspiralkapa * phi[idx]);
+        x[idx] = v * cos(phi[idx]);
+        y[idx] = v * sin(phi[idx]);
+    }
+
+    // min max
+    minx = maxx = x[0];
+    miny = maxy = y[0];
+
+    for (idx = 1; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        if (x[idx] < minx) { minx = x[idx]; }
+        if (x[idx] > maxx) { maxx = x[idx]; }
+        if (y[idx] < miny) { miny = y[idx]; }
+        if (y[idx] > maxy) { maxy = y[idx]; }
+    }
+
+    // min max normal
+    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        x[idx] = (x[idx] - minx)/(maxx-minx);
+        y[idx] = (y[idx] - miny)/(maxy-miny);
+    }
+
+    // allocate window size
+    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        ww[idx] = 96;
+        wh[idx] = 32;
+        wx[idx] = (m->ww - 2*ww[idx]/2) * x[idx] - ww[idx]/2;
+        wy[idx] = (m->wh - 2*wh[idx]/2) * y[idx] - wh[idx]/2;
+    }
+
+    // last -1 window center
+    idx = logarithmicspirallen-1;
+    ww[idx] = 1280;
+    wh[idx] = 480;
+    wx[idx] = m->ww/2 - ww[idx]/2;
+    wy[idx] = m->wh/2 - wh[idx]/2;
+
+    // last -2 window center
+    idx = logarithmicspirallen-2;
+    ww[idx] = 420;
+    wh[idx] = 140;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -5 window center
+    idx = logarithmicspirallen-5;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -10 window center
+    idx = logarithmicspirallen-10;
+    ww[idx] = 360;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -16 window center
+    idx = logarithmicspirallen-16;
+    ww[idx] = 640;
+    wh[idx] = 240;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -23 window center
+    idx = logarithmicspirallen-23;
+    ww[idx] = 240;
+    wh[idx] = 80;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -31 window center
+    idx = logarithmicspirallen-31;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -36 window center
+    idx = logarithmicspirallen-36;
+    ww[idx] = 240;
+    wh[idx] = 80;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -48 window center
+    idx = logarithmicspirallen-48;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    if (n > 1) {
+        // oldest window bottom right coner
+        idx = logarithmicspirallen-1-(n-1);
+        ww[idx] = 640;
+        wh[idx] = 240;
+        wx[idx] = m->ww - ww[idx];
+        wy[idx] = m->wh - wh[idx];
+    }
+
+	for(i = 0, c = nexttiled(m->clients); c && i < logarithmicspirallen; c = nexttiled(c->next), i++) {
+        idx = logarithmicspirallen - 1 - i;
+        wx[idx] = wx[idx] < 0 ? 0: wx[idx];
+        wy[idx] = wy[idx] < 0 ? 0: wy[idx];
+        wx[idx] = wx[idx] + ww[idx] > m->ww ? m->ww - ww[idx]: wx[idx];
+        wy[idx] = wy[idx] + wh[idx] > m->wh ? m->wh - wh[idx]: wy[idx];
+	    resize(c, m->wx + wx[idx], m->wy + wy[idx], ww[idx] - 2 * c->bw, wh[idx] - 2 * c->bw, False);
+	}
+}
+
+
 /* dwm-cake ------------------------------------------------------------ */
 void
 cake(Monitor *m) {
@@ -39,22 +184,11 @@ cake(Monitor *m) {
 
 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
-            if (n != 1 && m->sel->centerfirstwindow) {
-		        resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
-            }
-            
-            if (n != 1 && !m->sel->centerfirstwindow) {
-	        	resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * mfact - 2 * c->bw, False);
-            }
-
-            if (n == 1 && m->sel->centerfirstwindow) {
-		        resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
-            }
-
-            if (n == 1 && !m->sel->centerfirstwindow) {
-		        resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-            }
-        } else if (i == n-1 && n != 2) {
+            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * mfact - 2 * c->bw, False); }
+            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
+        } else if (i == n-1 && n != 2)                {
 		    resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False);
         } else {
 		    resize(c, 0, m->wy + m->wh * cfact, m->ww - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);

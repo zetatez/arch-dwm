@@ -75,6 +75,7 @@ static const Layout layouts[] = {
     { "∫_E^r(t)du",  gaplessgrid }, // dwm-gaplessgrid
 	{ "∫_E^r(t)du",         deck }, // dwm-deck-double
 	{ "∫_E^r(t)du",       tatami }, // dwm-tatami
+	{ "logarithmicspiral",  logarithmicspiral }, // dwm-logarithmicspiral
 	{ NULL,                NULL  }, // dwm-cyclelayouts
 };
 
@@ -125,6 +126,7 @@ static Key keys[] = {
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[10]} }, // gaplessgrid dwm-gaplessgrid
 	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[11]} }, // deck        dwm-deck-double
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[12]} }, // tatami      dwm-tatami
+	{ MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[13]} }, // tatami      dwm-tatami
 	{ MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY,                       XK_space,      setlayout,         {0} },
