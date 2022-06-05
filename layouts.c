@@ -21,7 +21,7 @@ static const float logarithmicspiralstart = -50;
 static const float logarithmicspiralstop  = 50;
 static const float logarithmicspiralstep  = 0.1;    // control the interval of each window
 static const float logarithmicspiralalpha = 1;
-static const float logarithmicspiralkapa  = 0.050;  // control the interval of each window cycle: 0.02, 0.05, 0.025, 0.3063489(golden LS)
+static const float logarithmicspiralkapa  = 0.2;   // control the interval of each window cycle: 0.2, 0.025, 0.05, 0.3063489(golden LS)
 static const int   logarithmicspirallen   = (const int) ((logarithmicspiralstop - logarithmicspiralstart )/logarithmicspiralstep);
 
 #include<math.h>
