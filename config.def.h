@@ -21,7 +21,7 @@ static const char *colors[][3]      = {
 };
 
 static const char *const autostart[] = {                               // dwm-cool-autostart
-	"dwmstatus 2>&1 >>/dev/null &", NULL,                              // dwm-cool-autostart
+	"dwmstatus", "2>&1 >>/dev/null &", NULL,                              // dwm-cool-autostart
     "/home/lorenzo/.dwm/autostart.sh", NULL,                           // dwm-cool-autostart
 	NULL /* terminate */                                               // dwm-cool-autostart
 };                                                                     // dwm-cool-autostart
