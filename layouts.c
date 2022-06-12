@@ -171,11 +171,8 @@ cakevertical(Monitor *m) {
     
     float cwszw,cwszh,cfact;
 
-    // allow dynamic
-    cfact = m->mfact;
-    
-    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
-    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+    // allow dynamic: mfact + a comfortable bias
+    cfact = m->mfact + 0.25;
 
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
@@ -209,11 +206,8 @@ cakehorizontal(Monitor *m) {
     
     float cwszw,cwszh,cfact;
 
-    // allow dynamic
-    cfact = m->mfact;
-    
-    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
-    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+    // allow dynamic: mfact + a comfortable bias
+    cfact = m->mfact + 0.25;
 
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
@@ -247,11 +241,8 @@ cakefullbottom(Monitor *m) {
     
     float cwszw,cwszh,cfact;
 
-    // allow dynamic
-    cfact = m->mfact;
-    
-    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
-    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+    // allow dynamic: mfact + a comfortable bias
+    cfact = m->mfact + 0.25;
 
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
