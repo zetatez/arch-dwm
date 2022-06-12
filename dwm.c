@@ -1787,7 +1787,7 @@ setmfact(const Arg *arg)
 	if (!arg || !selmon->lt[selmon->sellt]->arrange)
 		return;
 	f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
-	if (f < 0.05 || f > 0.95)
+    if (f < 0.05 || f > 0.95)
 		return;
 // 	selmon->mfact = f;                                                  // dwm-pertag
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f; // dwm-pertag

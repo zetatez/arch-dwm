@@ -235,6 +235,7 @@ cakehorizontal(Monitor *m) {
         }
 	}
 }
+
 void
 cakefullbottom(Monitor *m) {
 	unsigned int n, i;
@@ -270,6 +271,30 @@ cakefullbottom(Monitor *m) {
         } else { // else always buttom
 		    resize(c, 0, m->wy + m->wh * cfact, m->ww - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
         }
+	}
+}
+
+/* dwm-center ------------------------------------------------------------ */
+void
+center(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+    
+    float cwszw,cwszh,y;
+
+    cwszw = (centerwindowszw > 0.8) ? 0.8 : cakewindowszw;
+    cwszw = (centerwindowszw < 0.2) ? 0.2 : cakewindowszw;
+    cwszh = (centerwindowszh > 0.8) ? 0.8 : cakewindowszh;
+    cwszh = (centerwindowszh < 0.2) ? 0.2 : cakewindowszh;
+    
+    y = m->wh * (m->mfact - cwszh/2) < m->wy ? m->wy : m->wh * (m->mfact + cwszh/2) > m->wh ? m->wh - m->wh * cwszh : m->wh * (m->mfact - cwszh/2);
+	
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        resize(c, m->ww/2 - (m->ww * cwszw)/2, y, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
 	}
 }
 
