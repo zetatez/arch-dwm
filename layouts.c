@@ -177,9 +177,6 @@ cakevertical(Monitor *m) {
     cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
     cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
 
-    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
-    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
-
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
     cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
@@ -196,7 +193,7 @@ cakevertical(Monitor *m) {
         /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
 		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
         } else { // else always buttom
-		    resize(c, m->wx + (n-i-1) * m->ww/(n-1), m->wy + m->wh * cfact, m->ww/(n-1) - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
+		    resize(c, m->wx + (i-1) * m->ww/(n-1), m->wy + m->wh * cfact, m->ww/(n-1) - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
         }
 	}
 }
@@ -218,9 +215,6 @@ cakehorizontal(Monitor *m) {
     cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
     cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
 
-    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
-    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
-
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
     cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
@@ -237,7 +231,7 @@ cakehorizontal(Monitor *m) {
         /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
 		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
         } else { // else always buttom
-		    resize(c, 0, m->wy + m->wh * cfact + (n-i-1) * m->wh * (1 - cfact)/(n-1), m->ww - 2 * c->bw, m->wh * (1 - cfact) / (n-1) - 2 * c->bw, False);
+		    resize(c, 0, m->wy + m->wh * cfact + (i-1) * m->wh * (1 - cfact)/(n-1), m->ww - 2 * c->bw, m->wh * (1 - cfact) / (n-1) - 2 * c->bw, False);
         }
 	}
 }
@@ -257,9 +251,6 @@ cakefullbottom(Monitor *m) {
     
     cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
     cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
-
-    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
-    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
 
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
