@@ -159,10 +159,9 @@ logarithmicspiral(Monitor *m) {
 	}
 }
 
-
 /* dwm-cake ------------------------------------------------------------ */
 void
-cake(Monitor *m) {
+cakevertical(Monitor *m) {
 	unsigned int n, i;
 	Client *c;
                                                                                     
@@ -172,8 +171,55 @@ cake(Monitor *m) {
     
     float cwszw,cwszh,cfact;
 
-    cfact = (cakefact > 0.8) ? 0.8 : cakefact;
-    cfact = (cakefact < 0.2) ? 0.2 : cakefact;
+    // allow dynamic
+    cfact = m->mfact;
+    
+    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
+    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+
+    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
+    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
+
+    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
+    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
+    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
+    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
+
+    cwszh = (cwszh > cfact) ? cfact : cwszh;
+    
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i < 1) {
+            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
+            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
+        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
+		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
+        } else { // else always buttom
+		    resize(c, m->wx + (n-i-1) * m->ww/(n-1), m->wy + m->wh * cfact, m->ww/(n-1) - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
+        }
+	}
+}
+
+void
+cakehorizontal(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+    
+    float cwszw,cwszh,cfact;
+
+    // allow dynamic
+    cfact = m->mfact;
+    
+    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
+    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+
+    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
+    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
 
     cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
     cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
@@ -182,6 +228,46 @@ cake(Monitor *m) {
 
     cwszh = (cwszh > cfact) ? cfact : cwszh;
 
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i < 1) {
+            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
+            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
+            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
+        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
+		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
+        } else { // else always buttom
+		    resize(c, 0, m->wy + m->wh * cfact + (n-i-1) * m->wh * (1 - cfact)/(n-1), m->ww - 2 * c->bw, m->wh * (1 - cfact) / (n-1) - 2 * c->bw, False);
+        }
+	}
+}
+void
+cakefullbottom(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+    
+    float cwszw,cwszh,cfact;
+
+    // allow dynamic
+    cfact = m->mfact;
+    
+    cfact = (m->mfact > 0.8) ? 0.8 : m->mfact;
+    cfact = (m->mfact < 0.2) ? 0.2 : m->mfact;
+
+    /* cfact = (cakefact > 0.8) ? 0.8 : cakefact; */
+    /* cfact = (cakefact < 0.2) ? 0.2 : cakefact; */
+
+    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
+    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
+    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
+    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
+
+    cwszh = (cwszh > cfact) ? cfact : cwszh;
+    
 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
             if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
