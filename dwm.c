@@ -505,59 +505,59 @@ attachstack(Client *c)
 	c->mon->stack = c;
 }
 
-void                                                                                // dwm-swallow
-swallow(Client *p, Client *c)                                                       // dwm-swallow
-{                                                                                   // dwm-swallow
-                                                                                    // dwm-swallow
-	if (c->noswallow || c->isterminal)                                              // dwm-swallow
-		return;                                                                     // dwm-swallow
-	if (c->noswallow && !swallowfloating && c->isfloating)                          // dwm-swallow
-		return;                                                                     // dwm-swallow
-                                                                                    // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-    const SkipSwallow *ss;                                                          // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-    for (int i=0; LENGTH(skipswallow); i++) {                                       // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-        ss = &skipswallow[i];                                                       // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-        if (!strcmp(p->name, ss->parrent_name) && !strcmp(c->name, ss->child_name)) // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-            return;                                                                 // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-    }                                                                               // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-                                                                                    // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-	detach(c);                                                                      // dwm-swallow
-	detachstack(c);                                                                 // dwm-swallow
-                                                                                    // dwm-swallow
-	setclientstate(c, WithdrawnState);                                              // dwm-swallow
-	XUnmapWindow(dpy, p->win);                                                      // dwm-swallow
-                                                                                    // dwm-swallow
-	p->swallowing = c;                                                              // dwm-swallow
-	c->mon = p->mon;                                                                // dwm-swallow
-                                                                                    // dwm-swallow
-	Window w = p->win;                                                              // dwm-swallow
-	p->win = c->win;                                                                // dwm-swallow
-	c->win = w;                                                                     // dwm-swallow
-	updatetitle(p);                                                                 // dwm-swallow
-	XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h);                         // dwm-swallow
-	arrange(p->mon);                                                                // dwm-swallow
-	configure(p);                                                                   // dwm-swallow
-	updateclientlist();                                                             // dwm-swallow
-}                                                                                   // dwm-swallow
+void                                                                                  // dwm-swallow
+swallow(Client *p, Client *c)                                                         // dwm-swallow
+{                                                                                     // dwm-swallow
+	if (c->noswallow || c->isterminal)                                                // dwm-swallow
+		return;                                                                       // dwm-swallow
+	if (c->noswallow && !swallowfloating && c->isfloating)                            // dwm-swallow
+		return;                                                                       // dwm-swallow
+                                                                                      // dwm-swallow
+    const SkipSwallow *ss;                                                            // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+    for (unsigned int i = 0; i < LENGTH(skipswallow); i++) {                          // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+        ss = &skipswallow[i];                                                         // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+        if (!strcmp(p->name, ss->parrent_name) && !strcmp(c->name, ss->child_name)) { // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+           return;                                                                    // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+        }                                                                             // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+    }                                                                                 // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
+	                                                                                  // dwm-swallow
+    detach(c);                                                                        // dwm-swallow
+	detachstack(c);                                                                   // dwm-swallow
+                                                                                      // dwm-swallow
+	setclientstate(c, WithdrawnState);                                                // dwm-swallow
+	XUnmapWindow(dpy, p->win);                                                        // dwm-swallow
+                                                                                      // dwm-swallow
+	p->swallowing = c;                                                                // dwm-swallow
+	c->mon = p->mon;                                                                  // dwm-swallow
+                                                                                      // dwm-swallow
+	Window w = p->win;                                                                // dwm-swallow
+	p->win = c->win;                                                                  // dwm-swallow
+	c->win = w;                                                                       // dwm-swallow
+	updatetitle(p);                                                                   // dwm-swallow
+	XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h);                           // dwm-swallow
+	arrange(p->mon);                                                                  // dwm-swallow
+	configure(p);                                                                     // dwm-swallow
+	updateclientlist();                                                               // dwm-swallow
+}                                                                                     // dwm-swallow
 
-void                                                                                // dwm-swallow
-unswallow(Client *c)                                                                // dwm-swallow
-{                                                                                   // dwm-swallow
-	c->win = c->swallowing->win;                                                    // dwm-swallow
-                                                                                    // dwm-swallow
-	free(c->swallowing);                                                            // dwm-swallow
-	c->swallowing = NULL;                                                           // dwm-swallow
-                                                                                    // dwm-swallow
-	/* unfullscreen the client */                                                   // dwm-swallow
-	setfullscreen(c, 0);                                                            // dwm-swallow
-	updatetitle(c);                                                                 // dwm-swallow
-	arrange(c->mon);                                                                // dwm-swallow
-	XMapWindow(dpy, c->win);                                                        // dwm-swallow
-	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);                         // dwm-swallow
-	setclientstate(c, NormalState);                                                 // dwm-swallow
-	focus(NULL);                                                                    // dwm-swallow
-	arrange(c->mon);                                                                // dwm-swallow
-}                                                                                   // dwm-swallow
+void                                                                                  // dwm-swallow
+unswallow(Client *c)                                                                  // dwm-swallow
+{                                                                                     // dwm-swallow
+	c->win = c->swallowing->win;                                                      // dwm-swallow
+                                                                                      // dwm-swallow
+	free(c->swallowing);                                                              // dwm-swallow
+	c->swallowing = NULL;                                                             // dwm-swallow
+                                                                                      // dwm-swallow
+	/* unfullscreen the client */                                                     // dwm-swallow
+	setfullscreen(c, 0);                                                              // dwm-swallow
+	updatetitle(c);                                                                   // dwm-swallow
+	arrange(c->mon);                                                                  // dwm-swallow
+	XMapWindow(dpy, c->win);                                                          // dwm-swallow
+	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);                           // dwm-swallow
+	setclientstate(c, NormalState);                                                   // dwm-swallow
+	focus(NULL);                                                                      // dwm-swallow
+	arrange(c->mon);                                                                  // dwm-swallow
+}                                                                                     // dwm-swallow
 
 void
 buttonpress(XEvent *e)
