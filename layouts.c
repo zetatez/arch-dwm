@@ -369,7 +369,7 @@ gaplessgrid(Monitor *m) {
 	if(n == 0)
 		return;
     
-    if(n == 1 && m->sel->centerfirstwindow) { centerfirstwindow(m); return; }                                // dwm-centerfirstwindow
+    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
                                                                                     
 	/* grid dimensions */
 	for(cols = 0; cols <= n/2; cols++)
