@@ -43,6 +43,13 @@ static const Rule rules[] = {
     { "vimb",	             NULL,       NULL,	  0,		    0,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
 };
 
+/* fix dwm-swallow annoying "swallow all parrent process problem": you can specify parrent and child process name to skip swallow */ // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+static const SkipSwallow skipswallow[] = {                                                                                           // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+    {"vim", "vimb"},                                                                                                                 // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+    {"vim", "surf"},                                                                                                                 // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+    {"st",  "google"}                                                                                                                // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+};                                                                                                                                   // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
+
 /* layout(s) */
 static const float mfact            = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster            = 1;    /* number of clients in master area */
