@@ -47,7 +47,6 @@ static const Rule rules[] = {
 static const SkipSwallow skipswallow[] = {                                                                                           // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
     {"vim", "vimb"},                                                                                                                 // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
     {"vim", "surf"},                                                                                                                 // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
-    {"st",  "google"}                                                                                                                // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
 };                                                                                                                                   // dwm-swallow: fix annoying "swallow all parrent process problem", by myself
 
 /* layout(s) */
