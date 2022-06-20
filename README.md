@@ -54,7 +54,7 @@ the DISPLAY environment variable is set correctly, e.g.:
 
 In order to display status info in the bar, you can use dwmstats
 
-    git@github.com:zetatez/arch-dwmstatus.git
+    git clone https://github.com/zetatez/arch-dwmstatus.git
     cd arch-dwmstatus && sh build.sh
 
 ## Configuration
