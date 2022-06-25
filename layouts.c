@@ -159,6 +159,23 @@ logarithmicspiral(Monitor *m) {
 	}
 }
 
+
+/* dwm-center-horizontal ------------------------------------------------------------ */
+void
+centerhorizontal(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+    
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+		resize(c, m->wx + (m->ww - m->ww * m->mfact) / 2, m->wy, m->ww * m->mfact - 2 * c->bw, m->wh - 2 * c->bw, False);
+	}
+}
+
+
 /* dwm-cake ------------------------------------------------------------ */
 void
 cakevertical(Monitor *m) {

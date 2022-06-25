@@ -85,6 +85,7 @@ static const Layout layouts[] = {
     { "Grid",                     gaplessgrid }, // dwm-gaplessgrid
 	{ "Deck",                            deck }, // dwm-deck-double
 	{ "Tatami",                        tatami }, // dwm-tatami
+	{ "Center Horizontal",   centerhorizontal }, // dwm-centerhorizontal
 	{ "Logarithmic Spiral", logarithmicspiral }, // dwm-logarithmicspiral
 	{ NULL,                             NULL  }, // dwm-cyclelayouts
 };
@@ -139,7 +140,8 @@ static Key keys[] = {
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid dwm-gaplessgrid
 	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[14]} }, // deck        dwm-deck-double
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[15]} }, // tatami      dwm-tatami
-	{ MODKEY,                       XK_v,          setlayout,         {.v = &layouts[16]} }, // logarithmicspiral      dwm-logarithmicspiral
+	{ MODKEY,                       XK_v,          setlayout,         {.v = &layouts[16]} }, // centerhorizontal       dwm-centerhorizontal
+    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[17]} }, // logarithmicspiral      dwm-logarithmicspiral
 	{ MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY,                       XK_space,      setlayout,         {0} },
