@@ -63,34 +63,18 @@ logarithmicspiral(Monitor *m) {
         if (y[idx] > maxy) { maxy = y[idx]; }
     }
 
-    // min max normal
     for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        // min max normal
         x[idx] = (x[idx] - minx)/(maxx-minx);
         y[idx] = (y[idx] - miny)/(maxy-miny);
-    }
 
-    // allocate window size
-    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        // allocate window size
         ww[idx] = 96;
         wh[idx] = 32;
         wx[idx] = (m->ww - 2*ww[idx]/2) * x[idx] - ww[idx]/2;
         wy[idx] = (m->wh - 2*wh[idx]/2) * y[idx] - wh[idx]/2;
     }
 
-    // last -1 window center
-    idx = logarithmicspirallen-1;
-    ww[idx] = 1280;
-    wh[idx] = 480;
-    wx[idx] = m->ww/2 - ww[idx]/2;
-    wy[idx] = m->wh/2 - wh[idx]/2;
-
-    // last -2 window center
-    idx = logarithmicspirallen-2;
-    ww[idx] = 420;
-    wh[idx] = 140;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
     // last -5 window center
     idx = logarithmicspirallen-5;
     ww[idx] = 320;
@@ -140,22 +124,19 @@ logarithmicspiral(Monitor *m) {
     wx[idx] = wx[idx] - ww[idx]/2;
     wy[idx] = wy[idx];
     
-    if (n > 1) {
-        // oldest window bottom right coner
-        idx = logarithmicspirallen-1-(n-1);
-        ww[idx] = 640;
-        wh[idx] = 240;
-        wx[idx] = m->ww - ww[idx];
-        wy[idx] = m->wh - wh[idx];
-    }
-
 	for(i = 0, c = nexttiled(m->clients); c && i < logarithmicspirallen; c = nexttiled(c->next), i++) {
-        idx = logarithmicspirallen - 1 - i;
-        wx[idx] = wx[idx] < 0 ? 0: wx[idx];
-        wy[idx] = wy[idx] < 0 ? 0: wy[idx];
-        wx[idx] = wx[idx] + ww[idx] > m->ww ? m->ww - ww[idx]: wx[idx];
-        wy[idx] = wy[idx] + wh[idx] > m->wh ? m->wh - wh[idx]: wy[idx];
-	    resize(c, m->wx + wx[idx], m->wy + wy[idx], ww[idx] - 2 * c->bw, wh[idx] - 2 * c->bw, False);
+        if (i < 1) {
+            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+        } else if (i == 1) {
+            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+        } else {
+            idx = logarithmicspirallen - 1 - i;
+            wx[idx] = wx[idx] < 0 ? 0: wx[idx];
+            wy[idx] = wy[idx] < 0 ? 0: wy[idx];
+            wx[idx] = wx[idx] + ww[idx] > m->ww ? m->ww - ww[idx]: wx[idx];
+            wy[idx] = wy[idx] + wh[idx] > m->wh ? m->wh - wh[idx]: wy[idx];
+            resize(c, m->wx + wx[idx], m->wy + wy[idx], ww[idx] - 2 * c->bw, wh[idx] - 2 * c->bw, False);
+        }
 	}
 }
 
