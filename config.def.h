@@ -53,7 +53,7 @@ static const SkipSwallow skipswallow[] = {                            // dwm-swa
 };                                                                    // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
 
 /* layout(s) */
-static const float mfact            = 0.50; /* factor of master area size [0.05..0.95] */
+static const float mfact            = 0.50; /* factor of master area size [0.00..1.00] */         // limit [0.05..0.95] had been extended to [0.00..1.00].
 static const int nmaster            = 1;    /* number of clients in master area */
 // static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
@@ -65,6 +65,7 @@ static const float cakewindowszw    = 0.64; /* factor of cake center window size
 static const float cakewindowszh    = 0.48; /* factor of cake center window size height [0.20, 0.80] */  // dwm-cake my layout
 static const float centerwindowszw  = 0.64; /* factor of center window size width  [0.20, 0.80] */       // dwm-center my layout
 static const float centerwindowszh  = 0.48; /* factor of center window size height [0.20, 0.80] */       // dwm-center my layout
+static const float degreeoffreedom  = 1.00; /* factor of degree of freedom [0.00..1.00] */               // degree of freedom, by myself
 
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
@@ -85,7 +86,6 @@ static const Layout layouts[] = {
     { "Grid",                     gaplessgrid }, // dwm-gaplessgrid
 	{ "Deck",                            deck }, // dwm-deck-double
 	{ "Tatami",                        tatami }, // dwm-tatami
-	{ "Center Horizontal",   centerhorizontal }, // dwm-centerhorizontal
 	{ "Logarithmic Spiral", logarithmicspiral }, // dwm-logarithmicspiral
 	{ NULL,                             NULL  }, // dwm-cyclelayouts
 };
@@ -119,8 +119,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,          incnmaster,        {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_h,          setmfact,          {.f = -0.025} },
 	{ MODKEY|ShiftMask,             XK_l,          setmfact,          {.f = +0.025} },
-	{ MODKEY|ShiftMask,             XK_j,          movestack,         {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,          movestack,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,          setdegreeoffreedom,{.f = -0.025} },       // degree of freedom, by myself
+	{ MODKEY|ShiftMask,             XK_k,          setdegreeoffreedom,{.f = +0.025} },       // degree of freedom, by myself
+	{ MODKEY|ShiftMask,             XK_comma,      movestack,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_period,     movestack,         {.i = -1 } },
 	{ MODKEY,                       XK_Return,     zoom,              {0} },
 	{ MODKEY,                       XK_Tab,        view,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,        {0} },
@@ -140,25 +142,24 @@ static Key keys[] = {
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid dwm-gaplessgrid
 	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[14]} }, // deck        dwm-deck-double
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[15]} }, // tatami      dwm-tatami
-	{ MODKEY,                       XK_v,          setlayout,         {.v = &layouts[16]} }, // centerhorizontal       dwm-centerhorizontal
-    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[17]} }, // logarithmicspiral      dwm-logarithmicspiral
-	{ MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
+    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[16]} }, // logarithmicspiral      dwm-logarithmicspiral
+    { MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY,                       XK_space,      setlayout,         {0} },
 	{ MODKEY|ShiftMask,             XK_space,      togglefloating,    {0} },
-	{ MODKEY|ShiftMask,             XK_s,          togglesticky,      {0} },                // dwm-sticky
-	{ MODKEY,                       XK_f,          togglefullscreen,  {0} },                // dwm-actualfullscreen
+	{ MODKEY|ShiftMask,             XK_s,          togglesticky,      {0} },                 // dwm-sticky
+	{ MODKEY,                       XK_f,          togglefullscreen,  {0} },                 // dwm-actualfullscreen
 	{ MODKEY,                       XK_0,          view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,               {.ui = ~0 } },
-	{ MODKEY|ControlMask,           XK_comma,      focusmon,          {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period,     focusmon,          {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,      tagmon,            {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period,     tagmon,            {.i = +1 } },
-    { MODKEY|ControlMask,           XK_h,          shiftview,         {.i = -1 } }, // shiftview
-    { MODKEY|ControlMask,           XK_l,          shiftview,         {.i = +1 } }, // shiftview
- 	{ MODKEY,                       XK_apostrophe, scratchpad_show,   {0} }, // dwm-scratchpad
- 	{ MODKEY|ShiftMask,             XK_apostrophe, scratchpad_add,    {0} }, // dwm-scratchpad
- 	{ MODKEY|ControlMask,           XK_apostrophe, scratchpad_remove, {0} }, // dwm-scratchpad
+	{ MODKEY,                       XK_minus,      focusmon,          {.i = -1 } },
+	{ MODKEY,                       XK_equal,      focusmon,          {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_minus,      tagmon,            {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_equal,      tagmon,            {.i = +1 } },
+    { MODKEY|ControlMask,           XK_comma,      shiftview,         {.i = -1 } },          // shiftview
+    { MODKEY|ControlMask,           XK_period,     shiftview,         {.i = +1 } },          // shiftview
+ 	{ MODKEY,                       XK_apostrophe, scratchpad_show,   {0} },                 // dwm-scratchpad
+ 	{ MODKEY|ShiftMask,             XK_apostrophe, scratchpad_hide,   {0} },                 // dwm-scratchpad
+ 	{ MODKEY|ControlMask,           XK_apostrophe, scratchpad_remove, {0} },                 // dwm-scratchpad
 	TAGKEYS(                        XK_1,          0)
 	TAGKEYS(                        XK_2,          1)
 	TAGKEYS(                        XK_3,          2)

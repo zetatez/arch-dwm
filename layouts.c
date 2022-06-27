@@ -159,23 +159,6 @@ logarithmicspiral(Monitor *m) {
 	}
 }
 
-
-/* dwm-center-horizontal ------------------------------------------------------------ */
-void
-centerhorizontal(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
-    
-	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-		resize(c, m->wx + (m->ww - m->ww * m->mfact) / 2, m->wy, m->ww * m->mfact - 2 * c->bw, m->wh - 2 * c->bw, False);
-	}
-}
-
-
 /* dwm-cake ------------------------------------------------------------ */
 void
 cakevertical(Monitor *m) {
@@ -291,20 +274,12 @@ center(Monitor *m) {
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
 	if(n == 0)
 		return;
-    
-    float cwszw,cwszh,y;
-
-    cwszw = (centerwindowszw > 0.8) ? 0.8 : cakewindowszw;
-    cwszw = (centerwindowszw < 0.2) ? 0.2 : cakewindowszw;
-    cwszh = (centerwindowszh > 0.8) ? 0.8 : cakewindowszh;
-    cwszh = (centerwindowszh < 0.2) ? 0.2 : cakewindowszh;
-    
-    y = m->wh * (m->mfact - cwszh/2) < m->wy ? m->wy : m->wh * (m->mfact + cwszh/2) > m->wh ? m->wh - m->wh * cwszh : m->wh * (m->mfact - cwszh/2);
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        resize(c, m->ww/2 - (m->ww * cwszw)/2, y, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False);
+        resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
 	}
 }
+
 
 /* dwm-fibonacci ------------------------------------------------------------ */
 void

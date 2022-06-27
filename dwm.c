@@ -128,6 +128,7 @@ typedef struct Pertag Pertag; // dwm-pertag
 struct Monitor {
 	char ltsymbol[16];
 	float mfact;
+	float degreeoffreedom;   // degree of freedom, by myself
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
@@ -218,7 +219,6 @@ static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
 static void scan(void);
-static void scratchpad_add ();                        // dwm-scratchpad
 static void scratchpad_hide ();                       // dwm-scratchpad
 static _Bool scratchpad_last_showed_is_killed (void); // dwm-scratchpad
 static void scratchpad_remove ();                     // dwm-scratchpad
@@ -232,6 +232,7 @@ static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
+static void setdegreeoffreedom(const Arg *arg);       // degree of freedom, by myself
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
@@ -320,6 +321,7 @@ struct Pertag {                                                                 
 	unsigned int curtag, prevtag; /* current and previous tag */                         // dwm-pertag
 	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */               // dwm-pertag
 	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */                                 // dwm-pertag
+	float degreeoffreedoms[LENGTH(tags) + 1]; /* degreeoffreedoms per tag */             // dwm-pertag // degree of freedom, by myself
 	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */                        // dwm-pertag
 	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */ // dwm-pertag
 	int showbars[LENGTH(tags) + 1]; /* display bar for the current tag */                // dwm-pertag
@@ -783,6 +785,7 @@ createmon(void)
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
+	m->degreeoffreedom = degreeoffreedom;                        // degree of freedom, by myself
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
@@ -795,6 +798,7 @@ createmon(void)
 	for (i = 0; i <= LENGTH(tags); i++) {                        // dwm-pertag
 		m->pertag->nmasters[i] = m->nmaster;                     // dwm-pertag
 		m->pertag->mfacts[i] = m->mfact;                         // dwm-pertag
+		m->pertag->degreeoffreedoms[i] = m->degreeoffreedom;     // dwm-pertag // degree of freedom, by myself
                                                                  // dwm-pertag
 		m->pertag->ltidxs[i][0] = m->lt[0];                      // dwm-pertag
 		m->pertag->ltidxs[i][1] = m->lt[1];                      // dwm-pertag
@@ -1659,13 +1663,6 @@ scratchpad_show ()                                                              
 }                                                                                                     // dwm-scratchpad
                                                                                                       // dwm-scratchpad
 static void                                                                                           // dwm-scratchpad
-scratchpad_add ()                                                                                     // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-    scratchpad_hide();                                                                                // dwm-scratchpad
-    scratchpad_show();                                                                               // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static void                                                                                           // dwm-scratchpad
 scratchpad_show_client (Client * c)                                                                   // dwm-scratchpad
 {                                                                                                     // dwm-scratchpad
 	scratchpad_last_showed = c;                                                                       // dwm-scratchpad
@@ -1799,12 +1796,28 @@ setmfact(const Arg *arg)
 	if (!arg || !selmon->lt[selmon->sellt]->arrange)
 		return;
 	f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
-    if (f < 0.05 || f > 0.95)
+    /* if (f < 0.05 || f > 0.95) */                                     // remove the limit of mfact, by myself
+    if (f < 0.00 || f > 1.00)                                           // remove the limit of mfact, by myself
 		return;
 // 	selmon->mfact = f;                                                  // dwm-pertag
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f; // dwm-pertag
 	arrange(selmon);
 }
+
+/* arg > 1.0 will set degreeoffreedom absolutely */                                         // degree of freedom, by myself
+void                                                                                        // degree of freedom, by myself
+setdegreeoffreedom(const Arg *arg)                                                          // degree of freedom, by myself
+{                                                                                           // degree of freedom, by myself
+	float f;                                                                                // degree of freedom, by myself
+                                                                                            // degree of freedom, by myself
+	if (!arg || !selmon->lt[selmon->sellt]->arrange)                                        // degree of freedom, by myself
+		return;                                                                             // degree of freedom, by myself
+	f = arg->f < 1.0 ? arg->f + selmon->degreeoffreedom : arg->f - 1.0;                     // degree of freedom, by myself
+    if (f < 0.00 || f > 1.00)                                                               // degree of freedom, by myself
+		return;                                                                             // degree of freedom, by myself
+	selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag] = f; // degree of freedom, by myself
+	arrange(selmon);                                                                        // degree of freedom, by myself
+}                                                                                           // degree of freedom, by myself
 
 void
 setup(void)
@@ -2078,6 +2091,7 @@ toggleview(const Arg *arg)
 		/* apply settings for this view */                                                             // dwm-pertag
 		selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];                            // dwm-pertag
 		selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];                                // dwm-pertag
+		selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag];            // dwm-pertag // degree of freedom, by myself
 		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];                                // dwm-pertag
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];     // dwm-pertag
 		selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1]; // dwm-pertag
@@ -2429,6 +2443,7 @@ view(const Arg *arg)
                                                                                                    // dwm-pertag
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];                            // dwm-pertag
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];                                // dwm-pertag
+	selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag];            // dwm-pertag // degree of freedom, by myself
 	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];                                // dwm-pertag
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];     // dwm-pertag
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1]; // dwm-pertag
