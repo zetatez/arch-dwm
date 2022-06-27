@@ -280,6 +280,24 @@ center(Monitor *m) {
 	}
 }
 
+/* dwm-center-coner ------------------------------------------------------------ */
+void
+centerconer(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+	
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i < 1) {
+            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+        } else {
+            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+        }
+	}
+}
 
 /* dwm-fibonacci ------------------------------------------------------------ */
 void

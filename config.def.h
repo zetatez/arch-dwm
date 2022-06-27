@@ -86,6 +86,7 @@ static const Layout layouts[] = {
     { "Grid",                     gaplessgrid }, // dwm-gaplessgrid
 	{ "Deck",                            deck }, // dwm-deck-double
 	{ "Tatami",                        tatami }, // dwm-tatami
+	{ "Center coner",             centerconer }, // dwm-centerconer
 	{ "Logarithmic Spiral", logarithmicspiral }, // dwm-logarithmicspiral
 	{ NULL,                             NULL  }, // dwm-cyclelayouts
 };
@@ -130,19 +131,20 @@ static Key keys[] = {
 	{ MODKEY,                       XK_w,          setlayout,         {.v = &layouts[1]} },  // cakevertical
 	{ MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[2]} },  // cakehorizontal
 	{ MODKEY|ShiftMask,             XK_g,          setlayout,         {.v = &layouts[3]} },  // cakefullbottom
-	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[4]} },  // bstack      dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[5]} },  // bstackhoriz dwm-bottomstack
-    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[6]} },  // lefttile    dwm-lefttile
+	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[4]} },  // bstack                   dwm- bottomstack
+	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[5]} },  // bstackhoriz              dwm- bottomstack
+    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[6]} },  // lefttile                 dwm- lefttile
 	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[7]} },  // no layout means floating
 	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[8]} },  // monocle
 	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[9]} },  // tile
-	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[10]} }, // tilewide    dwm-tilewide
-	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[11]} }, // sprial      dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[12]} }, // dwindle     dwm-fibonacci
-    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid dwm-gaplessgrid
-	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[14]} }, // deck        dwm-deck-double
-	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[15]} }, // tatami      dwm-tatami
-    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[16]} }, // logarithmicspiral      dwm-logarithmicspiral
+	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[10]} }, // tilewide                 dwm- tilewide
+	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[11]} }, // sprial                   dwm- fibonacci
+	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[12]} }, // dwindle                  dwm- fibonacci
+    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid              dwm- gaplessgrid
+	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[14]} }, // deck                     dwm- deck-double
+	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[15]} }, // tatami                   dwm- tatami
+    { MODKEY,                       XK_v,          setlayout,         {.v = &layouts[16]} }, // centerconer              dwm- centerconer
+    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[17]} }, // logarithmicspiral        dwm- logarithmicspiral
     { MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY,                       XK_space,      setlayout,         {0} },
