@@ -128,7 +128,8 @@ typedef struct Pertag Pertag; // dwm-pertag
 struct Monitor {
 	char ltsymbol[16];
 	float mfact;
-	float degreeoffreedom;   // degree of freedom, by myself
+	float freeh;   // free h, by myself
+	float frees;   // free s, by myself
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
@@ -232,7 +233,8 @@ static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
-static void setdegreeoffreedom(const Arg *arg);       // degree of freedom, by myself
+static void setfreeh(const Arg *arg);       // free h, by myself
+static void setfrees(const Arg *arg);       // free s, by myself
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
@@ -322,7 +324,8 @@ struct Pertag {                                                                 
 	unsigned int curtag, prevtag; /* current and previous tag */                         // dwm-pertag
 	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */               // dwm-pertag
 	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */                                 // dwm-pertag
-	float degreeoffreedoms[LENGTH(tags) + 1]; /* degreeoffreedoms per tag */             // dwm-pertag // degree of freedom, by myself
+	float freehs[LENGTH(tags) + 1]; /* freehs per tag */                                 // dwm-pertag // free h, by myself
+	float freess[LENGTH(tags) + 1]; /* freess per tag */                                 // dwm-pertag // free s, by myself
 	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */                        // dwm-pertag
 	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */ // dwm-pertag
 	int showbars[LENGTH(tags) + 1]; /* display bar for the current tag */                // dwm-pertag
@@ -786,7 +789,8 @@ createmon(void)
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
-	m->degreeoffreedom = degreeoffreedom;                        // degree of freedom, by myself
+	m->freeh = freeh;                        // free h, by myself
+	m->frees = frees;                        // free s, by myself
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
@@ -799,7 +803,8 @@ createmon(void)
 	for (i = 0; i <= LENGTH(tags); i++) {                        // dwm-pertag
 		m->pertag->nmasters[i] = m->nmaster;                     // dwm-pertag
 		m->pertag->mfacts[i] = m->mfact;                         // dwm-pertag
-		m->pertag->degreeoffreedoms[i] = m->degreeoffreedom;     // dwm-pertag // degree of freedom, by myself
+		m->pertag->freehs[i] = m->freeh;                         // dwm-pertag // free h, by myself
+		m->pertag->freess[i] = m->frees;                         // dwm-pertag // free s, by myself
                                                                  // dwm-pertag
 		m->pertag->ltidxs[i][0] = m->lt[0];                      // dwm-pertag
 		m->pertag->ltidxs[i][1] = m->lt[1];                      // dwm-pertag
@@ -1805,20 +1810,35 @@ setmfact(const Arg *arg)
 	arrange(selmon);
 }
 
-/* arg > 1.0 will set degreeoffreedom absolutely */                                         // degree of freedom, by myself
-void                                                                                        // degree of freedom, by myself
-setdegreeoffreedom(const Arg *arg)                                                          // degree of freedom, by myself
-{                                                                                           // degree of freedom, by myself
-	float f;                                                                                // degree of freedom, by myself
-                                                                                            // degree of freedom, by myself
-	if (!arg || !selmon->lt[selmon->sellt]->arrange)                                        // degree of freedom, by myself
-		return;                                                                             // degree of freedom, by myself
-	f = arg->f < 1.0 ? arg->f + selmon->degreeoffreedom : arg->f - 1.0;                     // degree of freedom, by myself
-    if (f < 0.00 || f > 1.00)                                                               // degree of freedom, by myself
-		return;                                                                             // degree of freedom, by myself
-	selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag] = f; // degree of freedom, by myself
-	arrange(selmon);                                                                        // degree of freedom, by myself
-}                                                                                           // degree of freedom, by myself
+/* arg > 1.0 will set freeh absolutely */                                                    // free h, by myself
+void                                                                                         // free h, by myself
+setfreeh(const Arg *arg)                                                                     // free h, by myself
+{                                                                                            // free h, by myself
+	float f;                                                                                 // free h, by myself
+                                                                                             // free h, by myself
+	if (!arg || !selmon->lt[selmon->sellt]->arrange)                                         // free h, by myself
+		return;                                                                              // free h, by myself
+	f = arg->f < 1.0 ? arg->f + selmon->freeh : arg->f - 1.0;                                // free h, by myself
+    if (f < 0.00 || f > 1.00)                                                                // free h, by myself
+		return;                                                                              // free h, by myself
+	selmon->freeh = selmon->pertag->freehs[selmon->pertag->curtag] = f;                      // free h, by myself
+	arrange(selmon);                                                                         // free h, by myself
+}                                                                                            // free h, by myself
+
+/* arg > 1.0 will set frees absolutely */                                                    // free s, by myself
+void                                                                                         // free s, by myself
+setfrees(const Arg *arg)                                                                     // free s, by myself
+{                                                                                            // free s, by myself
+	float f;                                                                                 // free s, by myself
+                                                                                             // free s, by myself
+	if (!arg || !selmon->lt[selmon->sellt]->arrange)                                         // free s, by myself
+		return;                                                                              // free s, by myself
+	f = arg->f < 1.0 ? arg->f + selmon->frees : arg->f - 1.0;                                // free s, by myself
+    if (f < 0.00 || f > 1.00)                                                                // free s, by myself
+		return;                                                                              // free s, by myself
+	selmon->frees = selmon->pertag->freess[selmon->pertag->curtag] = f;                      // free s, by myself
+	arrange(selmon);                                                                         // free s, by myself
+}                                                                                            // free s, by myself
 
 void
 setup(void)
@@ -2093,7 +2113,8 @@ toggleview(const Arg *arg)
 		/* apply settings for this view */                                                             // dwm-pertag
 		selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];                            // dwm-pertag
 		selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];                                // dwm-pertag
-		selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag];            // dwm-pertag // degree of freedom, by myself
+		selmon->freeh = selmon->pertag->freehs[selmon->pertag->curtag];                                // dwm-pertag // free h, by myself
+		selmon->frees = selmon->pertag->freess[selmon->pertag->curtag];                                // dwm-pertag // free s, by myself
 		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];                                // dwm-pertag
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];     // dwm-pertag
 		selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1]; // dwm-pertag
@@ -2445,7 +2466,8 @@ view(const Arg *arg)
                                                                                                    // dwm-pertag
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];                            // dwm-pertag
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];                                // dwm-pertag
-	selmon->degreeoffreedom = selmon->pertag->degreeoffreedoms[selmon->pertag->curtag];            // dwm-pertag // degree of freedom, by myself
+	selmon->freeh = selmon->pertag->freehs[selmon->pertag->curtag];                                // dwm-pertag // free h, by myself
+	selmon->frees = selmon->pertag->freess[selmon->pertag->curtag];                                // dwm-pertag // free h, by myself
 	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];                                // dwm-pertag
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];     // dwm-pertag
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1]; // dwm-pertag

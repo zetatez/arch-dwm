@@ -53,19 +53,20 @@ static const SkipSwallow skipswallow[] = {                            // dwm-swa
 };                                                                    // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
 
 /* layout(s) */
-static const float mfact            = 0.50; /* factor of master area size [0.00..1.00] */         // limit [0.05..0.95] had been extended to [0.00..1.00].
+static const float mfact            = 0.50; /* factor of master area size [0.00..1.00] */                 // limit [0.05..0.95] had been extended to [0.00..1.00].
 static const int nmaster            = 1;    /* number of clients in master area */
-// static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
-static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */    // dwm-tatami
+// static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */            // dwm-tatami
+static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */            // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
-static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */ // dwm-centerfistwindow
-static const float firstwindowszw   = 0.64; /* factor of center first window size width  [0.20, 0.80] */ // dwm-centerfistwindow
-static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */ // dwm-centerfistwindow
-/* static const float cakewindowszw    = 0.64; /1* factor of cake center window size width  [0.20, 0.80] *1/  // dwm-cake my layout */
-/* static const float cakewindowszh    = 0.48; /1* factor of cake center window size height [0.20, 0.80] *1/  // dwm-cake my layout */
-static const float centerwindowszw  = 0.64; /* factor of center window size width  [0.20, 0.80] */       // dwm-center my layout
-static const float centerwindowszh  = 0.48; /* factor of center window size height [0.20, 0.80] */       // dwm-center my layout
-static const float degreeoffreedom  = 0.90; /* factor of degree of freedom [0.00..1.00] */               // degree of freedom, by myself
+static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */         // dwm-centerfistwindow
+static const float firstwindowszw   = 0.64; /* factor of center first window size width  [0.20, 0.80] */  // dwm-centerfistwindow
+static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */  // dwm-centerfistwindow
+/* static const float cakewindowszw = 0.64; /1* factor of cake center window size width  [0.20, 0.80] *1/ // dwm-cake my layout */
+/* static const float cakewindowszh = 0.48; /1* factor of cake center window size height [0.20, 0.80] *1/ // dwm-cake my layout */
+static const float centerwindowszw  = 0.64; /* factor of center window size width  [0.20, 0.80] */        // dwm-center my layout
+static const float centerwindowszh  = 0.48; /* factor of center window size height [0.20, 0.80] */        // dwm-center my layout
+static const float freeh            = 0.90;           /* factor of free h [0.00..1.00] */                 // free h, by myself
+static const float frees            = 0.45;           /* factor of free s [0.00..1.00] */                 // free s, by myself
 
 #include "layouts.c"                                                                    // layouts
 static const Layout layouts[] = {
@@ -86,6 +87,7 @@ static const Layout layouts[] = {
 	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
     { "Monocle",                            monocle },
+	{ "AnyAny",                     anywhereanysize }, // dwm-anywhereanysize
     { "∅",                                     NULL }, /* no layout function means floating behavior */
 	{ NULL,                                   NULL  }, // dwm-cyclelayouts
 };
@@ -120,8 +122,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,          incnmaster,        {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_h,          setmfact,          {.f = -0.025} },
 	{ MODKEY|ShiftMask,             XK_l,          setmfact,          {.f = +0.025} },
-	{ MODKEY|ShiftMask,             XK_j,          setdegreeoffreedom,{.f = -0.025} },       // degree of freedom, by myself
-	{ MODKEY|ShiftMask,             XK_k,          setdegreeoffreedom,{.f = +0.025} },       // degree of freedom, by myself
+	{ MODKEY|ShiftMask,             XK_j,          setfreeh,          {.f = -0.025} },       // free h, by myself
+	{ MODKEY|ShiftMask,             XK_k,          setfreeh,          {.f = +0.025} },       // free h, by myself
+	{ MODKEY|ShiftMask,             XK_o,          setfrees,          {.f = -0.025} },       // free s, by myself
+	{ MODKEY|ShiftMask,             XK_i,          setfrees,          {.f = +0.025} },       // free s, by myself
     { MODKEY,	                    XK_comma,      cyclelayout,       {.i = -1 } },
 	{ MODKEY,                       XK_period,     cyclelayout,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,      movestack,         {.i = +1 } },
@@ -146,7 +150,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[13]} }, // tatami                   dwm-tatami
     { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[14]} }, // logarithmicspiral        dwm-layouts
 	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[15]} },  // monocle
-	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[16]} },  // no layout means floating
+	{ MODKEY|ShiftMask,             XK_u,          setlayout,         {.v = &layouts[16]} },  // monocle
+	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[17]} },  // no layout means floating
 	{ MODKEY,                       XK_Return,     zoom,              {0} },
 	{ MODKEY,                       XK_Tab,        view,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,        {0} },

@@ -15,6 +15,25 @@ centerfirstwindow(Monitor *m) {
     return;
 }
 
+/* dwm-anywhereanysize------------------------------------------------------------ */
+void
+anywhereanysize(Monitor *m) {
+	unsigned int n, i;
+	Client *c;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
+	
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i == 0) {
+            resize(c, m->wx + m->ww * m->mfact - m->ww * m->frees / 2 , m->wy + m->wh * (1 - m->freeh) - m->wh * m->frees / 2, m->ww * m->frees - 2 * c->bw, m->wh * m->frees - 2 * c->bw, False);
+        } else {
+            return;
+        }
+	}
+}
+
 /* dwm-multi-layer ------------------------------------------------------------ */
 void
 multilayerhorizontal(Monitor *m) {
@@ -51,9 +70,9 @@ multilayervertical(Monitor *m) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
         /* } else if (i == 1) { */
-        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->degreeoffreedom) - 2 * c->bw, False); */
+        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->freeh) - 2 * c->bw, False); */
         /* } else { */
-        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->degreeoffreedom) + (n-i-1) * m->wh * m->degreeoffreedom / (n-2), m->ww - 2 * c->bw, m->wh * m->degreeoffreedom/(n-2) - 2 * c->bw, False); */
+        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n-i-1) * m->wh * m->freeh / (n-2), m->ww - 2 * c->bw, m->wh * m->freeh/(n-2) - 2 * c->bw, False); */
         } else {
             resize(c, m->wx, m->wy + (n-i-1) * m->wh / (n-1), m->ww - 2 * c->bw, m->wh / (n-1) - 2 * c->bw, False);
         }
@@ -71,7 +90,7 @@ center(Monitor *m) {
 		return;
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+        resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
 	}
 }
 
@@ -87,9 +106,9 @@ centerconer(Monitor *m) {
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i < 1) {
-            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
         } else {
-            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->freeh * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->freeh * 0.32 - 2 * c->bw, False);
         }
 	}
 }
@@ -272,10 +291,8 @@ deckhorizontal(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
     if(n > m->nmaster)
-        /* mw = m->nmaster ? m->ww * m->mfact : 0; */
-        mh = m->nmaster ? m->wh * m->mfact : 0;
+        mh = m->nmaster ? m->wh * (1 - m->freeh) : 0;
     else
-        /* mw = m->ww; */
         mh = m->wh;
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
@@ -299,7 +316,7 @@ bottomstackvertical(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
                                                                                 //
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->degreeoffreedom * m->wh : 0;
+		mh = m->nmaster ? m->freeh * m->wh : 0;
 		tw = m->ww / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -334,7 +351,7 @@ bottomstackhorizontal(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->degreeoffreedom * m->wh : 0;
+		mh = m->nmaster ? m->freeh * m->wh : 0;
 		th = (m->wh - mh) / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -626,9 +643,9 @@ logarithmicspiral(Monitor *m) {
     
 	for(i = 0, c = nexttiled(m->clients); c && i < logarithmicspirallen; c = nexttiled(c->next), i++) {
         if (i < 1) {
-            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
         } else if (i == 1) {
-            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->freeh * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->freeh * 0.32 - 2 * c->bw, False);
         } else {
             idx = logarithmicspirallen - 1 - i;
             wx[idx] = wx[idx] < 0 ? 0: wx[idx];
