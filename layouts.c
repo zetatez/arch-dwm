@@ -15,235 +15,49 @@ centerfirstwindow(Monitor *m) {
     return;
 }
 
-/* dwm-logarithmic-spiral ------------------------------------------------------------ */
-// control the shape of logarithmic spiral
-static const float logarithmicspiralstart = -50;
-static const float logarithmicspiralstop  = 50;
-static const float logarithmicspiralstep  = 0.1;    // control the interval of each window
-static const float logarithmicspiralalpha = 1;
-static const float logarithmicspiralkapa  = 0.2;   // control the interval of each window cycle: 0.2, 0.025, 0.05, 0.3063489(golden LS)
-static const int   logarithmicspirallen   = (const int) ((logarithmicspiralstop - logarithmicspiralstart )/logarithmicspiralstep);
-
-#include<math.h>
+/* dwm-multi-layer ------------------------------------------------------------ */
 void
-logarithmicspiral(Monitor *m) {
-	unsigned int n, idx;
-    float i, v, minx, maxx, miny, maxy;
-    float phi[logarithmicspirallen];
-
-    float x[logarithmicspirallen];
-    float y[logarithmicspirallen];
-
-    float ww[logarithmicspirallen];
-    float wh[logarithmicspirallen];
-    float wx[logarithmicspirallen];
-    float wy[logarithmicspirallen];
-
+multilayerhorizontal(Monitor *m) {
+	unsigned int n, i;
 	Client *c;
-                                                                             
-    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-    if(n == 0)
-        return;
+                                                                                    
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+	if(n == 0)
+		return;
 
-    for (idx = 0, i = logarithmicspiralstart; i < logarithmicspiralstop && idx < sizeof(phi) / sizeof(phi[0]); i += logarithmicspiralstep, phi[idx] = i, idx++);
-    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
-        v = logarithmicspiralalpha * exp(logarithmicspiralkapa * phi[idx]);
-        x[idx] = v * cos(phi[idx]);
-        y[idx] = v * sin(phi[idx]);
-    }
-
-    // min max
-    minx = maxx = x[0];
-    miny = maxy = y[0];
-
-    for (idx = 1; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
-        if (x[idx] < minx) { minx = x[idx]; }
-        if (x[idx] > maxx) { maxx = x[idx]; }
-        if (y[idx] < miny) { miny = y[idx]; }
-        if (y[idx] > maxy) { maxy = y[idx]; }
-    }
-
-    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
-        // min max normal
-        x[idx] = (x[idx] - minx)/(maxx-minx);
-        y[idx] = (y[idx] - miny)/(maxy-miny);
-
-        // allocate window size
-        ww[idx] = 96;
-        wh[idx] = 32;
-        wx[idx] = (m->ww - 2*ww[idx]/2) * x[idx] - ww[idx]/2;
-        wy[idx] = (m->wh - 2*wh[idx]/2) * y[idx] - wh[idx]/2;
-    }
-
-    // last -5 window center
-    idx = logarithmicspirallen-5;
-    ww[idx] = 320;
-    wh[idx] = 120;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -10 window center
-    idx = logarithmicspirallen-10;
-    ww[idx] = 360;
-    wh[idx] = 120;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -16 window center
-    idx = logarithmicspirallen-16;
-    ww[idx] = 640;
-    wh[idx] = 240;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -23 window center
-    idx = logarithmicspirallen-23;
-    ww[idx] = 240;
-    wh[idx] = 80;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -31 window center
-    idx = logarithmicspirallen-31;
-    ww[idx] = 320;
-    wh[idx] = 120;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -36 window center
-    idx = logarithmicspirallen-36;
-    ww[idx] = 240;
-    wh[idx] = 80;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-    // last -48 window center
-    idx = logarithmicspirallen-48;
-    ww[idx] = 320;
-    wh[idx] = 120;
-    wx[idx] = wx[idx] - ww[idx]/2;
-    wy[idx] = wy[idx];
-    
-	for(i = 0, c = nexttiled(m->clients); c && i < logarithmicspirallen; c = nexttiled(c->next), i++) {
-        if (i < 1) {
-            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
-        } else if (i == 1) {
-            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i == 0) {
+            resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
+        /* } else if (i == 1) { */
+        /*     resize(c, m->wx, m->wy, m->ww * m->mfact + 2 * c->bw, m->wh - 2 * c->bw, False); */
+        /* } else { */
+        /*     resize(c, m->wx + m->ww * m->mfact + (i - 2) * m->ww * (1 - m->mfact) / (n - 2), m->wy, m->ww * (1 - m->mfact) / (n - 2) - 2 * c->bw, m->wh - 2 * c->bw, False); */
         } else {
-            idx = logarithmicspirallen - 1 - i;
-            wx[idx] = wx[idx] < 0 ? 0: wx[idx];
-            wy[idx] = wy[idx] < 0 ? 0: wy[idx];
-            wx[idx] = wx[idx] + ww[idx] > m->ww ? m->ww - ww[idx]: wx[idx];
-            wy[idx] = wy[idx] + wh[idx] > m->wh ? m->wh - wh[idx]: wy[idx];
-            resize(c, m->wx + wx[idx], m->wy + wy[idx], ww[idx] - 2 * c->bw, wh[idx] - 2 * c->bw, False);
+            resize(c, m->wx + (i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
         }
-	}
+    }
 }
 
-/* dwm-cake ------------------------------------------------------------ */
 void
-cakevertical(Monitor *m) {
+multilayervertical(Monitor *m) {
 	unsigned int n, i;
 	Client *c;
                                                                                     
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
 	if(n == 0)
 		return;
-    
-    float cwszw,cwszh,cfact;
 
-    // allow dynamic: mfact + a comfortable bias
-    cfact = m->mfact + 0.25;
-
-    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
-    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
-    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
-    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
-
-    cwszh = (cwszh > cfact) ? cfact : cwszh;
-    
-	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        if (i < 1) {
-            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
-            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
-        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
-		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
-        } else { // else always buttom
-		    resize(c, m->wx + (i-1) * m->ww/(n-1), m->wy + m->wh * cfact, m->ww/(n-1) - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i == 0) {
+            resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
+        /* } else if (i == 1) { */
+        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->degreeoffreedom) - 2 * c->bw, False); */
+        /* } else { */
+        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->degreeoffreedom) + (n-i-1) * m->wh * m->degreeoffreedom / (n-2), m->ww - 2 * c->bw, m->wh * m->degreeoffreedom/(n-2) - 2 * c->bw, False); */
+        } else {
+            resize(c, m->wx, m->wy + (n-i-1) * m->wh / (n-1), m->ww - 2 * c->bw, m->wh / (n-1) - 2 * c->bw, False);
         }
-	}
-}
-
-void
-cakehorizontal(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
-    
-    float cwszw,cwszh,cfact;
-
-    // allow dynamic: mfact + a comfortable bias
-    cfact = m->mfact + 0.25;
-
-    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
-    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
-    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
-    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
-
-    cwszh = (cwszh > cfact) ? cfact : cwszh;
-
-	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        if (i < 1) {
-            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
-            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
-        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
-		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
-        } else { // else always buttom
-		    resize(c, 0, m->wy + m->wh * cfact + (i-1) * m->wh * (1 - cfact)/(n-1), m->ww - 2 * c->bw, m->wh * (1 - cfact) / (n-1) - 2 * c->bw, False);
-        }
-	}
-}
-
-void
-cakefullbottom(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
-    
-    float cwszw,cwszh,cfact;
-
-    // allow dynamic: mfact + a comfortable bias
-    cfact = m->mfact + 0.25;
-
-    cwszw = (cakewindowszw > 0.8) ? 0.8 : cakewindowszw;
-    cwszw = (cakewindowszw < 0.2) ? 0.2 : cakewindowszw;
-    cwszh = (cakewindowszh > 0.8) ? 0.8 : cakewindowszh;
-    cwszh = (cakewindowszh < 0.2) ? 0.2 : cakewindowszh;
-
-    cwszh = (cwszh > cfact) ? cfact : cwszh;
-    
-	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        if (i < 1) {
-            if (n != 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - (m->ww * cwszw)/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n != 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh * cfact - 2 * c->bw, False); }
-            if (n == 1 && m->sel->centerfirstwindow)  { resize(c, m->ww/2 - m->ww * cwszw/2, m->wy + m->wh * cfact - m->wh * cwszh, m->ww * cwszw - 2 * c->bw, m->wh * cwszh - 2 * c->bw, False); }
-            if (n == 1 && !m->sel->centerfirstwindow) { resize(c, 0, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False); }
-        /* } else if (i == n-1 && n != 1 && n != 2) { // oldest on top */
-		    /* resize(c, m->ww/2 - m->ww * cwszw * 0.7/2, m->wy, m->ww * cwszw * 0.7 - 2 * c->bw, m->wh * (cfact - cwszh) - 2 * c->bw, False); */
-        } else { // else always buttom
-		    resize(c, 0, m->wy + m->wh * cfact, m->ww - 2 * c->bw, m->wh * (1 - cfact) - 2 * c->bw, False);
-        }
-	}
+    }
 }
 
 /* dwm-center ------------------------------------------------------------ */
@@ -409,17 +223,66 @@ tileleft(Monitor *m)
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-// 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+ 			// resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			resize(c, m->wx + m->ww - mw, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			if (my + HEIGHT(c) < m->wh)
 				my += HEIGHT(c);
 		} else {
 			h = (m->wh - ty) / (n - i);
-//          resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+            // resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			resize(c, m->wx, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
+}
+
+/* dwm-deck ------------------------------------------------------------ */
+void
+deckvertical(Monitor *m) {
+    unsigned int i, n, mw;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
+
+    if(n > m->nmaster)
+        mw = m->nmaster ? m->ww * m->mfact : 0;
+    else
+        mw = m->ww;
+
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+        if(i < m->nmaster)
+            resize(c, m->wx, m->wy, mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
+        else
+            resize(c, m->wx + mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1), m->wy, m->ww - (mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1)) - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
+}
+
+void
+deckhorizontal(Monitor *m) {
+    unsigned int i, n, mh;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
+
+    if(n > m->nmaster)
+        /* mw = m->nmaster ? m->ww * m->mfact : 0; */
+        mh = m->nmaster ? m->wh * m->mfact : 0;
+    else
+        /* mw = m->ww; */
+        mh = m->wh;
+
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+        if(i < m->nmaster)
+            resize(c, m->wx, m->wy, m->ww - (2*c->bw), mh - (2*c->bw), c->bw);
+        else
+            resize(c, m->wx, m->wy + mh + (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1), m->ww - 2 * c->bw, m->wh - (mh + (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1)) - 2 * c->bw, c->bw);
 }
 
 /* dwm-bottomstack ------------------------------------------------------------ */
@@ -436,7 +299,7 @@ bstackvertical(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
                                                                                 //
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->mfact * m->wh : 0;
+		mh = m->nmaster ? m->degreeoffreedom * m->wh : 0;
 		tw = m->ww / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -471,7 +334,7 @@ bstackhorizontal(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->mfact * m->wh : 0;
+		mh = m->nmaster ? m->degreeoffreedom * m->wh : 0;
 		th = (m->wh - mh) / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -489,62 +352,6 @@ bstackhorizontal(Monitor *m) {
 				ty += HEIGHT(c);
 		}
 	}
-}
-
-/* dwm-deck-double ------------------------------------------------------------ */
-void
-deck(Monitor *m) {
-    unsigned int i, n, mw;
-    Client *c;
-
-    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-    if(n == 0)
-        return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
-    if(n > m->nmaster)
-        mw = m->nmaster ? m->ww * m->mfact : 0;
-    else
-        mw = m->ww;
-
-    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-        if(i < m->nmaster)
-            resize(c, m->wx, m->wy, mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
-        else
-            resize(c, m->wx + mw, m->wy, m->ww - mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
-}
-
-/* dwm-tilewide ------------------------------------------------------------ */
-void
-tilewide(Monitor *m)
-{
-    unsigned int i, n, w, h, mw, mx, ty;
-	Client *c;
-
-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
-	if (n > m->nmaster)
-		mw = m->nmaster ? m->ww * m->mfact : 0;
-	else
-		mw = m->ww;
-	for (i = mx = ty = 0, c = nexttiled(m->clients); c;
-	     c = nexttiled(c->next), i++)
-		if (i < m->nmaster) {
-		        w = (mw - mx) / (MIN(n, m->nmaster) - i);
-		        resize(c, m->wx + mx, m->wy, w - (2*c->bw), (m->wh - ty) - (2*c->bw), 0);
-		        if  (mx + WIDTH(c) < m->ww)
-		                mx += WIDTH(c);
-		} else {
-			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-			if (ty + HEIGHT(c) < m->wh)
-				ty += HEIGHT(c);
-		}
 }
 
 /* dwm-tatami ------------------------------------------------------------ */
@@ -707,3 +514,129 @@ tatami(Monitor *m) {
 		}
 	}
 }
+
+/* dwm-logarithmic-spiral ------------------------------------------------------------ */
+// control the shape of logarithmic spiral
+static const float logarithmicspiralstart = -50;
+static const float logarithmicspiralstop  = 50;
+static const float logarithmicspiralstep  = 0.1;    // control the interval of each window
+static const float logarithmicspiralalpha = 1;
+static const float logarithmicspiralkapa  = 0.2;    // control the interval of each window cycle: 0.2, 0.025, 0.05, 0.3063489(golden LS)
+static const int   logarithmicspirallen   = (const int) ((logarithmicspiralstop - logarithmicspiralstart )/logarithmicspiralstep);
+
+#include<math.h>
+void
+logarithmicspiral(Monitor *m) {
+	unsigned int n, idx;
+    float i, v, minx, maxx, miny, maxy;
+    float phi[logarithmicspirallen];
+
+    float x[logarithmicspirallen];
+    float y[logarithmicspirallen];
+
+    float ww[logarithmicspirallen];
+    float wh[logarithmicspirallen];
+    float wx[logarithmicspirallen];
+    float wy[logarithmicspirallen];
+
+	Client *c;
+                                                                             
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    for (idx = 0, i = logarithmicspiralstart; i < logarithmicspiralstop && idx < sizeof(phi) / sizeof(phi[0]); i += logarithmicspiralstep, phi[idx] = i, idx++);
+    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        v = logarithmicspiralalpha * exp(logarithmicspiralkapa * phi[idx]);
+        x[idx] = v * cos(phi[idx]);
+        y[idx] = v * sin(phi[idx]);
+    }
+
+    // min max
+    minx = maxx = x[0];
+    miny = maxy = y[0];
+
+    for (idx = 1; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        if (x[idx] < minx) { minx = x[idx]; }
+        if (x[idx] > maxx) { maxx = x[idx]; }
+        if (y[idx] < miny) { miny = y[idx]; }
+        if (y[idx] > maxy) { maxy = y[idx]; }
+    }
+
+    for (idx = 0; idx < sizeof(phi) / sizeof(phi[0]); idx++) {
+        // min max normal
+        x[idx] = (x[idx] - minx)/(maxx-minx);
+        y[idx] = (y[idx] - miny)/(maxy-miny);
+
+        // allocate window size
+        ww[idx] = 96;
+        wh[idx] = 32;
+        wx[idx] = (m->ww - 2*ww[idx]/2) * x[idx] - ww[idx]/2;
+        wy[idx] = (m->wh - 2*wh[idx]/2) * y[idx] - wh[idx]/2;
+    }
+
+    // last -5 window center
+    idx = logarithmicspirallen-5;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -10 window center
+    idx = logarithmicspirallen-10;
+    ww[idx] = 360;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -16 window center
+    idx = logarithmicspirallen-16;
+    ww[idx] = 640;
+    wh[idx] = 240;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -23 window center
+    idx = logarithmicspirallen-23;
+    ww[idx] = 240;
+    wh[idx] = 80;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -31 window center
+    idx = logarithmicspirallen-31;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -36 window center
+    idx = logarithmicspirallen-36;
+    ww[idx] = 240;
+    wh[idx] = 80;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+    // last -48 window center
+    idx = logarithmicspirallen-48;
+    ww[idx] = 320;
+    wh[idx] = 120;
+    wx[idx] = wx[idx] - ww[idx]/2;
+    wy[idx] = wy[idx];
+    
+	for(i = 0, c = nexttiled(m->clients); c && i < logarithmicspirallen; c = nexttiled(c->next), i++) {
+        if (i < 1) {
+            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->degreeoffreedom)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->degreeoffreedom - 2 * c->bw, False);
+        } else if (i == 1) {
+            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->degreeoffreedom * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->degreeoffreedom * 0.32 - 2 * c->bw, False);
+        } else {
+            idx = logarithmicspirallen - 1 - i;
+            wx[idx] = wx[idx] < 0 ? 0: wx[idx];
+            wy[idx] = wy[idx] < 0 ? 0: wy[idx];
+            wx[idx] = wx[idx] + ww[idx] > m->ww ? m->ww - ww[idx]: wx[idx];
+            wy[idx] = wy[idx] + wh[idx] > m->wh ? m->wh - wh[idx]: wy[idx];
+            resize(c, m->wx + wx[idx], m->wy + wy[idx], ww[idx] - 2 * c->bw, wh[idx] - 2 * c->bw, False);
+        }
+	}
+}
+
