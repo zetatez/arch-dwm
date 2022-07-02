@@ -21,6 +21,24 @@
     - dwm-tilewide-6.3.diff
     - shiftview.c
 
+- supported layouts
+    - multi-layer horizontal
+    - multi-layer vertical
+    - deck horizontal
+    - deck vertical
+    - bottom stack horizontal
+    - bottom stack vertical
+    - fibonacci dwindle
+    - fibonacci sprial
+    - gapless grid
+    - logarithmic sprial
+    - tatami
+    - center
+    - center coner
+    - tile left
+    - tile right
+    - floating
+    - monocle
 
 # dwm - dynamic window manager
 dwm is an extremely fast, small, and dynamic window manager for X.

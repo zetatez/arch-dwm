@@ -240,7 +240,8 @@ static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
-static void tile(Monitor *);
+// static void tile(Monitor *);   // by myself
+static void tileright(Monitor *); // by myself
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglesticky(const Arg *arg);     // dwm-sticky
@@ -1981,7 +1982,8 @@ tagmon(const Arg *arg)
 }
 
 void
-tile(Monitor *m)
+// tile(Monitor *m)  // by myself
+tileright(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;

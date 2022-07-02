@@ -72,21 +72,21 @@ static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "Multilayer",            multilayerhorizontal }, // dwm-multilayerhorizontal
 	{ "Multilayer",              multilayervertical }, // dwm-multilayervertical
-	{ "Stack Vertical",              bstackvertical }, // dwm-bottomstack
-	{ "Stack Horizontal",          bstackhorizontal }, // dwm-bottomstack
-    { "Tile Right",                            tile }, /* first entry is default */
-    { "Tile Left",                         tileleft }, // dwm-leftstack
-    { "Monocle",                            monocle },
-    { "∅",                                     NULL }, /* no layout function means floating behavior */
-    { "Fibonacci",                           spiral }, // dwm-fibonacci
-    { "Fibonacci",                          dwindle }, // dwm-fibonacci
-    { "Grid",                           gaplessgrid }, // dwm-gaplessgrid
 	{ "Deck",                          deckvertical }, // dwm-deckvertical
 	{ "Deck",                        deckhorizontal }, // dwm-deckhorizontal
-	{ "Tatami",                              tatami }, // dwm-tatami
+    { "Fibonacci",                           spiral }, // dwm-fibonacci
+    { "Fibonacci",                          dwindle }, // dwm-fibonacci
+	{ "Bottom Stack",           bottomstackvertical }, // dwm-bottomstack
+	{ "Bottom Stack",         bottomstackhorizontal }, // dwm-bottomstack
+    { "Tile Right",                       tileright }, // tile -> tileright
+    { "Tile Left",                         tileleft }, // dwm-leftstack
 	{ "Center",                              center }, // dwm-center
 	{ "Center coner",                   centerconer }, // dwm-centerconer
+    { "Grid",                           gaplessgrid }, // dwm-gaplessgrid
+	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
+    { "Monocle",                            monocle },
+    { "∅",                                     NULL }, /* no layout function means floating behavior */
 	{ NULL,                                   NULL  }, // dwm-cyclelayouts
 };
 
@@ -130,23 +130,23 @@ static Key keys[] = {
     { MODKEY|ControlMask,           XK_period,     shiftview,         {.i = +1 } },          // shiftview
 	{ MODKEY,                       XK_0,          view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,               {.ui = ~0 } },
-    { MODKEY,                       XK_w,          setlayout,         {.v = &layouts[0]} },  // mutillayerhorizontal     dwm-multilayerhorizontal
-    { MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[1]} },  // multilayervertical       dwm-multillayervertical
-	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[2]} },  // bstack                   dwm-bottomstack
-	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[3]} },  // bstackhoriz              dwm-bottomstack
-	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[4]} },  // tile
-    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[5]} },  // lefttile                 dwm-lefttile
-	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[6]} },  // monocle
-	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[7]} },  // no layout means floating
-	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[8]} },  // sprial                   dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[9]} },  // dwindle                  dwm-fibonacci
-    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[10]} }, // gaplessgrid              dwm-gaplessgrid
-	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[11]} }, // deckvertical             dwm-deckvertical
-	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[12]} }, // deckhorizontal           dwm-deckhorizontal
+    { MODKEY,                       XK_w,          setlayout,         {.v = &layouts[0]} },  // mutillayerhorizontal     dwm-layouts
+    { MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[1]} },  // multilayervertical       dwm-layouts
+	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[2]} },  // deckvertical             dwm-layouts
+	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[3]} },  // deckhorizontal           dwm-layouts
+	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[4]} },  // sprial                   dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[5]} },  // dwindle                  dwm-fibonacci
+	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[6]} },  // bstack                   dwm-bottomstackvertical
+	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[7]} },  // bstack                   dwm-bottomstackhorizontal
+	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[8]} },  // tileright                default tile
+    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[9]} },  // lefttile                 dwm-lefttile
+	{ MODKEY|ShiftMask,             XK_m,          setlayout,         {.v = &layouts[10]} }, // center                   dwm-layouts
+    { MODKEY,                       XK_v,          setlayout,         {.v = &layouts[11]} }, // centerconer              dwm-layouts
+    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[12]} }, // gaplessgrid              dwm-gaplessgrid
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[13]} }, // tatami                   dwm-tatami
-	{ MODKEY|ShiftMask,             XK_m,          setlayout,         {.v = &layouts[14]} }, // center
-    { MODKEY,                       XK_v,          setlayout,         {.v = &layouts[15]} }, // centerconer              dwm-centerconer
-    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[16]} }, // logarithmicspiral        dwm-logarithmicspiral
+    { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[14]} }, // logarithmicspiral        dwm-layouts
+	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[15]} },  // monocle
+	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[16]} },  // no layout means floating
 	{ MODKEY,                       XK_Return,     zoom,              {0} },
 	{ MODKEY,                       XK_Tab,        view,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,        {0} },

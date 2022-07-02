@@ -287,7 +287,7 @@ deckhorizontal(Monitor *m) {
 
 /* dwm-bottomstack ------------------------------------------------------------ */
 static void
-bstackvertical(Monitor *m) {
+bottomstackvertical(Monitor *m) {
 	int w, h, mh, mx, tx, ty, tw;
 	unsigned int i, n;
 	Client *c;
@@ -322,7 +322,7 @@ bstackvertical(Monitor *m) {
 }
 
 static void
-bstackhorizontal(Monitor *m) {
+bottomstackhorizontal(Monitor *m) {
 	int w, mh, mx, tx, ty, th;
 	unsigned int i, n;
 	Client *c;
