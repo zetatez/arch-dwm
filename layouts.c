@@ -18,63 +18,63 @@ centerfirstwindow(Monitor *m) {
 /* dwm-anywhereanysize------------------------------------------------------------ */
 void
 anywhereanysize(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
-	
+    unsigned int n, i;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+    if(n == 0)
+        return;
+
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx + m->ww * m->mfact - m->ww * m->frees / 2 , m->wy + m->wh * (1 - m->freeh) - m->wh * m->frees / 2, m->ww * m->frees - 2 * c->bw, m->wh * m->frees - 2 * c->bw, False);
         } else {
             return;
         }
-	}
+    }
 }
 
 /* dwm-multi-layer ------------------------------------------------------------ */
 void
 multilayerhorizontal(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
+    unsigned int n, i;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+    if(n == 0)
+        return;
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-        /* } else if (i == 1) { */
-        /*     resize(c, m->wx, m->wy, m->ww * m->mfact + 2 * c->bw, m->wh - 2 * c->bw, False); */
+            /* } else if (i == 1) { */
+        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->freeh) - 2 * c->bw, False); */
         /* } else { */
-        /*     resize(c, m->wx + m->ww * m->mfact + (i - 2) * m->ww * (1 - m->mfact) / (n - 2), m->wy, m->ww * (1 - m->mfact) / (n - 2) - 2 * c->bw, m->wh - 2 * c->bw, False); */
+        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n-i-1) * m->wh * m->freeh / (n-2), m->ww - 2 * c->bw, m->wh * m->freeh/(n-2) - 2 * c->bw, False); */
         } else {
-            resize(c, m->wx + (i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
+            resize(c, m->wx, m->wy + (n - i - 1) * m->wh / (n - 1), m->ww - 2 * c->bw, m->wh / (n - 1) - 2 * c->bw, False);
         }
     }
 }
 
 void
 multilayervertical(Monitor *m) {
-	unsigned int n, i;
-	Client *c;
-                                                                                    
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-	if(n == 0)
-		return;
+    unsigned int n, i;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+    if(n == 0)
+        return;
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-        /* } else if (i == 1) { */
-        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->freeh) - 2 * c->bw, False); */
+            /* } else if (i == 1) { */
+        /*     resize(c, m->wx, m->wy, m->ww * m->mfact + 2 * c->bw, m->wh - 2 * c->bw, False); */
         /* } else { */
-        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n-i-1) * m->wh * m->freeh / (n-2), m->ww - 2 * c->bw, m->wh * m->freeh/(n-2) - 2 * c->bw, False); */
+        /*     resize(c, m->wx + m->ww * m->mfact + (i - 2) * m->ww * (1 - m->mfact) / (n - 2), m->wy, m->ww * (1 - m->mfact) / (n - 2) - 2 * c->bw, m->wh - 2 * c->bw, False); */
         } else {
-            resize(c, m->wx, m->wy + (n-i-1) * m->wh / (n-1), m->ww - 2 * c->bw, m->wh / (n-1) - 2 * c->bw, False);
+            resize(c, m->wx + (n - i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
         }
     }
 }
@@ -90,7 +90,8 @@ center(Monitor *m) {
 		return;
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
+        // resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
+        resize(c, m->ww/2 - (m->ww * m->freeh)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->freeh - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
 	}
 }
 
@@ -274,7 +275,7 @@ deckvertical(Monitor *m) {
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
         if(i < m->nmaster)
-            resize(c, m->wx, m->wy, mw - (2*c->bw), m->wh - (2*c->bw), c->bw);
+            resize(c, m->wx, m->wy, mw - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
         else
             resize(c, m->wx + mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1), m->wy, m->ww - (mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1)) - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
 }
@@ -291,15 +292,15 @@ deckhorizontal(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
     if(n > m->nmaster)
-        mh = m->nmaster ? m->wh * (1 - m->freeh) : 0;
+        mh = m->nmaster ? m->wh * m->freeh : 0;
     else
         mh = m->wh;
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
         if(i < m->nmaster)
-            resize(c, m->wx, m->wy, m->ww - (2*c->bw), mh - (2*c->bw), c->bw);
+            resize(c, m->wx, m->wy + m->wh - mh, m->ww - 2 * c->bw, mh - 2 * c->bw, c->bw);
         else
-            resize(c, m->wx, m->wy + mh + (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1), m->ww - 2 * c->bw, m->wh - (mh + (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1)) - 2 * c->bw, c->bw);
+            resize(c, m->wx, m->wy + (n - i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1), m->ww - 2 * c->bw, m->wh - (mh + (n - i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1)) - 2 * c->bw, c->bw);
 }
 
 /* dwm-bottomstack ------------------------------------------------------------ */
