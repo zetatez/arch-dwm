@@ -1,4 +1,5 @@
 // layouts
+#include<math.h>
 
  // dwm-centerfirstwindow
 void
@@ -14,6 +15,7 @@ centerfirstwindow(Monitor *m) {
 	resize(c, m->ww/2 - (m->ww * fwszw)/2, m->wh/2 - m->wh * fwszh/2, m->ww * fwszw - 2 * c->bw, m->wh * fwszh - 2 * c->bw, False);
     return;
 }
+
 
 /* dwm-anywhereanysize------------------------------------------------------------ */
 void
@@ -34,9 +36,9 @@ anywhereanysize(Monitor *m) {
     }
 }
 
-/* dwm-multi-layer ------------------------------------------------------------ */
+/* dwm-overlaylayer ------------------------------------------------------------ */
 void
-multilayerhorizontal(Monitor *m) {
+overlaylayergrid(Monitor *m) {
     unsigned int n, i;
     Client *c;
 
@@ -47,7 +49,25 @@ multilayerhorizontal(Monitor *m) {
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-            /* } else if (i == 1) { */
+        } else {
+            resize(c, m->wx + ((i-1)%3) * m->ww/3 , m->wy + m->wh * (1 - m->freeh) + ((n-i-1-(n-i-1)%3)/3) * m->wh * m->freeh / ((n-1-(n-1-1)%3)/3 + 1), m->ww / 3 - 2 * c->bw, m->wh * m->freeh/((n-1-1)/3+1) - 2 * c->bw, False);
+        }
+    }
+}
+
+void
+overlaylayerhorizontal(Monitor *m) {
+    unsigned int n, i;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
+    if(n == 0)
+        return;
+
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        if (i == 0) {
+            resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
+        /* } else if (i == 1) { */
         /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->freeh) - 2 * c->bw, False); */
         /* } else { */
         /*     resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n-i-1) * m->wh * m->freeh / (n-2), m->ww - 2 * c->bw, m->wh * m->freeh/(n-2) - 2 * c->bw, False); */
@@ -58,7 +78,7 @@ multilayerhorizontal(Monitor *m) {
 }
 
 void
-multilayervertical(Monitor *m) {
+overlaylayervertical(Monitor *m) {
     unsigned int n, i;
     Client *c;
 
@@ -69,7 +89,7 @@ multilayervertical(Monitor *m) {
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-            /* } else if (i == 1) { */
+        /* } else if (i == 1) { */
         /*     resize(c, m->wx, m->wy, m->ww * m->mfact + 2 * c->bw, m->wh - 2 * c->bw, False); */
         /* } else { */
         /*     resize(c, m->wx + m->ww * m->mfact + (i - 2) * m->ww * (1 - m->mfact) / (n - 2), m->wy, m->ww * (1 - m->mfact) / (n - 2) - 2 * c->bw, m->wh - 2 * c->bw, False); */
@@ -317,7 +337,7 @@ bottomstackvertical(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
                                                                                 //
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->freeh * m->wh : 0;
+		mh = m->nmaster ? (1 - m->freeh) * m->wh : 0;
 		tw = m->ww / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -352,7 +372,7 @@ bottomstackhorizontal(Monitor *m) {
     if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
 	if (n > m->nmaster) {
-		mh = m->nmaster ? m->freeh * m->wh : 0;
+		mh = m->nmaster ? (1 - m->freeh) * m->wh : 0;
 		th = (m->wh - mh) / (n - m->nmaster);
 		ty = m->wy + mh;
 	} else {
@@ -542,7 +562,6 @@ static const float logarithmicspiralalpha = 1;
 static const float logarithmicspiralkapa  = 0.2;    // control the interval of each window cycle: 0.2, 0.025, 0.05, 0.3063489(golden LS)
 static const int   logarithmicspirallen   = (const int) ((logarithmicspiralstop - logarithmicspiralstart )/logarithmicspiralstep);
 
-#include<math.h>
 void
 logarithmicspiral(Monitor *m) {
 	unsigned int n, idx;
@@ -657,4 +676,3 @@ logarithmicspiral(Monitor *m) {
         }
 	}
 }
-
