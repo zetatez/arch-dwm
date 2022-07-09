@@ -69,10 +69,6 @@ overlaylayerhorizontal(Monitor *m) {
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-        /* } else if (i == 1) { */
-        /*     resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh * (1 - m->freeh) - 2 * c->bw, False); */
-        /* } else { */
-        /*     resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n-i-1) * m->wh * m->freeh / (n-2), m->ww - 2 * c->bw, m->wh * m->freeh/(n-2) - 2 * c->bw, False); */
         } else {
             resize(c, m->wx, m->wy + (n - i - 1) * m->wh / (n - 1), m->ww - 2 * c->bw, m->wh / (n - 1) - 2 * c->bw, False);
         }
@@ -91,10 +87,6 @@ overlaylayervertical(Monitor *m) {
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
-        /* } else if (i == 1) { */
-        /*     resize(c, m->wx, m->wy, m->ww * m->mfact + 2 * c->bw, m->wh - 2 * c->bw, False); */
-        /* } else { */
-        /*     resize(c, m->wx + m->ww * m->mfact + (i - 2) * m->ww * (1 - m->mfact) / (n - 2), m->wy, m->ww * (1 - m->mfact) / (n - 2) - 2 * c->bw, m->wh - 2 * c->bw, False); */
         } else {
             resize(c, m->wx + (n - i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
         }
@@ -103,7 +95,7 @@ overlaylayervertical(Monitor *m) {
 
 /* dwm-center ------------------------------------------------------------ */
 void
-center(Monitor *m) {
+centerequalratio(Monitor *m) {
 	unsigned int n, i;
 	Client *c;
                                                                                     
@@ -112,14 +104,12 @@ center(Monitor *m) {
 		return;
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        // resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
         resize(c, m->ww/2 - (m->ww * m->freeh)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->freeh - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
 	}
 }
 
-/* dwm-center-coner ------------------------------------------------------------ */
 void
-centerconer(Monitor *m) {
+centeranyshape(Monitor *m) {
 	unsigned int n, i;
 	Client *c;
                                                                                     
@@ -128,11 +118,7 @@ centerconer(Monitor *m) {
 		return;
 	
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-        if (i < 1) {
-            resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
-        } else {
-            resize(c, m->ww/2 + (m->ww * m->mfact)/2, m->wy + m->wh/2 + m->wh * m->freeh * (1 - 0.5 - 0.32) , m->ww * (1 - m->mfact)/2 - 2 * c->bw, m->wh * m->freeh * 0.32 - 2 * c->bw, False);
-        }
+        resize(c, m->ww/2 - (m->ww * m->mfact)/2, m->wy + m->wh/2 - (m->wh * m->freeh)/2 , m->ww * m->mfact - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
 	}
 }
 

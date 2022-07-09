@@ -80,8 +80,8 @@ static const Layout layouts[] = {
 	{ "Bottom Stack",         bottomstackhorizontal }, // dwm-bottomstack
     { "Tile Right",                       tileright }, // tile -> tileright
     { "Tile Left",                         tileleft }, // dwm-leftstack
-	{ "Center",                              center }, // dwm-center
-	{ "Center coner",                   centerconer }, // dwm-centerconer
+	{ "Center ER",                 centerequalratio }, // dwm-center
+	{ "Center AS",                   centeranyshape }, // dwm-center
     { "Grid",                           gaplessgrid }, // dwm-gaplessgrid
 	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
