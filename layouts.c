@@ -49,8 +49,10 @@ overlaylayergrid(Monitor *m) {
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
+        } else if (i < 1 + (n-1)%3) {
+            resize(c, m->wx + ((i-1)%3)*m->ww/((n-1)%3), m->wy + m->wh*(1-m->freeh) + ((n-i-1-(n-i-1)%3)/3)*m->wh*m->freeh/((n-1-(n-1-1)%3)/3+1), m->ww/((n-1)%3) - 2*c->bw, m->wh*m->freeh/((n-1-1)/3+1) - 2*c->bw, False);
         } else {
-            resize(c, m->wx + ((i-1)%3) * m->ww/3 , m->wy + m->wh * (1 - m->freeh) + ((n-i-1-(n-i-1)%3)/3) * m->wh * m->freeh / ((n-1-(n-1-1)%3)/3 + 1), m->ww / 3 - 2 * c->bw, m->wh * m->freeh/((n-1-1)/3+1) - 2 * c->bw, False);
+            resize(c, m->wx + ((i-1)%3)*m->ww/3 , m->wy + m->wh*(1-m->freeh) + ((n-i-1-(n-i-1)%3)/3)*m->wh*m->freeh/((n-1-(n-1-1)%3)/3+1), m->ww/3 - 2*c->bw, m->wh*m->freeh/((n-1-1)/3+1) - 2*c->bw, False);
         }
     }
 }
