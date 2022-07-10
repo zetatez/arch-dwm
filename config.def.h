@@ -74,8 +74,8 @@ static const Layout layouts[] = {
 	{ "Overlaylayer",              overlaylayergrid }, // dwm-overlaylayergrid
 	{ "Overlaylayer",        overlaylayerhorizontal }, // dwm-overlaylayerhorizontal
 	{ "Overlaylayer",          overlaylayervertical }, // dwm-overlaylayervertical
-	{ "Deck",                          deckvertical }, // dwm-deckvertical
 	{ "Deck",                        deckhorizontal }, // dwm-deckhorizontal
+	{ "Deck",                          deckvertical }, // dwm-deckvertical
     { "Fibonacci",                           spiral }, // dwm-fibonacci
     { "Fibonacci",                          dwindle }, // dwm-fibonacci
 	{ "Bottom Stack",           bottomstackvertical }, // dwm-bottomstack

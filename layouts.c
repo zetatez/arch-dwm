@@ -70,7 +70,8 @@ overlaylayerhorizontal(Monitor *m) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
         } else {
-            resize(c, m->wx, m->wy + (n - i - 1) * m->wh / (n - 1), m->ww - 2 * c->bw, m->wh / (n - 1) - 2 * c->bw, False);
+            /* resize(c, m->wx, m->wy + (n - i - 1) * m->wh / (n - 1), m->ww - 2 * c->bw, m->wh / (n - 1) - 2 * c->bw, False); */
+            resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n - i - 1) * m->wh * m->freeh / (n - 1), m->ww - 2 * c->bw, m->wh * m->freeh / (n - 1) - 2 * c->bw, False);
         }
     }
 }
@@ -88,7 +89,8 @@ overlaylayervertical(Monitor *m) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
         } else {
-            resize(c, m->wx + (n - i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
+            /* resize(c, m->wx + (n - i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False); */
+            resize(c, m->wx + m->ww * m->mfact + (n - i - 1) * m->ww * (1 - m->mfact) / (n - 1), m->wy, m->ww * (1 - m->mfact) / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
         }
     }
 }
