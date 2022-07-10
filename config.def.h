@@ -69,6 +69,8 @@ static const float frees            = 0.50; /* factor of free s [0.00..1.00] */ 
 #include "layouts.c"                                   // layouts
 static const Layout layouts[] = {
 	/* symbol     arrange function */
+	{ "Center ER",                 centerequalratio }, // dwm-center
+	{ "Center AS",                   centeranyshape }, // dwm-center
 	{ "Overlaylayer",              overlaylayergrid }, // dwm-overlaylayergrid
 	{ "Overlaylayer",        overlaylayerhorizontal }, // dwm-overlaylayerhorizontal
 	{ "Overlaylayer",          overlaylayervertical }, // dwm-overlaylayervertical
@@ -80,8 +82,6 @@ static const Layout layouts[] = {
 	{ "Bottom Stack",         bottomstackhorizontal }, // dwm-bottomstack
     { "Tile Right",                       tileright }, // tile -> tileright
     { "Tile Left",                         tileleft }, // dwm-leftstack
-	{ "Center ER",                 centerequalratio }, // dwm-center
-	{ "Center AS",                   centeranyshape }, // dwm-center
     { "Grid",                           gaplessgrid }, // dwm-gaplessgrid
 	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
@@ -134,19 +134,19 @@ static Key keys[] = {
     { MODKEY|ControlMask,           XK_period,     shiftview,         {.i = +1 } },          // shiftview
 	{ MODKEY,                       XK_0,          view,              {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,               {.ui = ~0 } },
-    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[0]} },  // overlaylayergrid         dwm-layouts
-    { MODKEY,                       XK_w,          setlayout,         {.v = &layouts[1]} },  // overlaylayerhorizontal   dwm-layouts
-    { MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[2]} },  // overlaylayervertical     dwm-layouts
-	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[3]} },  // deckvertical             dwm-layouts
-	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[4]} },  // deckhorizontal           dwm-layouts
-	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[5]} },  // sprial                   dwm-fibonacci
-	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[6]} },  // dwindle                  dwm-fibonacci
-	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[7]} },  // bstack                   dwm-bottomstackvertical
-	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[8]} },  // bstack                   dwm-bottomstackhorizontal
-	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[9]} },  // tileright                default tile
-    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[10]} }, // lefttile                 dwm-lefttile
-	{ MODKEY|ShiftMask,             XK_m,          setlayout,         {.v = &layouts[11]} }, // center                   dwm-layouts
-    { MODKEY,                       XK_v,          setlayout,         {.v = &layouts[12]} }, // centerconer              dwm-layouts
+	{ MODKEY|ShiftMask,             XK_m,          setlayout,         {.v = &layouts[0]} },  // centerequalratio         dwm-layouts
+    { MODKEY,                       XK_v,          setlayout,         {.v = &layouts[1]} },  // centeranyshape           dwm-layouts
+    { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[2]} },  // overlaylayergrid         dwm-layouts
+    { MODKEY,                       XK_w,          setlayout,         {.v = &layouts[3]} },  // overlaylayerhorizontal   dwm-layouts
+    { MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[4]} },  // overlaylayervertical     dwm-layouts
+	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[5]} },  // deckvertical             dwm-layouts
+	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[6]} },  // deckhorizontal           dwm-layouts
+	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[7]} },  // sprial                   dwm-fibonacci
+	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[8]} },  // dwindle                  dwm-fibonacci
+	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[9]} },  // bstack                   dwm-bottomstackvertical
+	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[10]} }, // bstack                   dwm-bottomstackhorizontal
+	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[11]} }, // tileright                default tile
+    { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[12]} }, // lefttile                 dwm-lefttile
     { MODKEY|ShiftMask,             XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid              dwm-gaplessgrid
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[14]} }, // tatami                   dwm-tatami
     { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[15]} }, // logarithmicspiral        dwm-layouts
