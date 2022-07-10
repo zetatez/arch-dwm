@@ -283,9 +283,9 @@ deckvertical(Monitor *m) {
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
         if(i < m->nmaster)
-            resize(c, m->wx, m->wy, mw - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
+            resize(c, m->wx, m->wy, mw - 2*c->bw, m->wh - 2*c->bw, c->bw);
         else
-            resize(c, m->wx + mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1), m->wy, m->ww - (mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster + 1)) - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
+            resize(c, m->wx + mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster), m->wy, m->ww - (mw + (i - m->nmaster) * (m->ww - mw) / (n - m->nmaster)) - 2 * c->bw, m->wh - 2 * c->bw, c->bw);
 }
 
 void
@@ -306,9 +306,32 @@ deckhorizontal(Monitor *m) {
 
     for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
         if(i < m->nmaster)
-            resize(c, m->wx, m->wy + m->wh - mh, m->ww - 2 * c->bw, mh - 2 * c->bw, c->bw);
+            resize(c, m->wx, m->wy, m->ww - 2*c->bw, mh - 2*c->bw, c->bw);
         else
-            resize(c, m->wx, m->wy + (n - i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1), m->ww - 2 * c->bw, m->wh - (mh + (n - i - m->nmaster) * (m->wh - mh) / (n - m->nmaster + 1)) - 2 * c->bw, c->bw);
+            resize(c, m->wx, m->wy + mh + (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster), m->ww - 2 * c->bw, m->wh - (mh +  (i - m->nmaster) * (m->wh - mh) / (n - m->nmaster)) - 2 * c->bw, c->bw);
+}
+
+void
+deckhorizontalvertical(Monitor *m) {
+    unsigned int i, n, mh;
+    Client *c;
+
+    for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if(n == 0)
+        return;
+
+    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
+
+    if(n > m->nmaster)
+        mh = m->nmaster ? m->wh * m->freeh : 0;
+    else
+        mh = m->wh;
+
+    for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+        if(i < m->nmaster)
+            resize(c, m->wx, m->wy, m->ww - 2*c->bw, mh - 2*c->bw, c->bw);
+        else
+            resize(c, m->wx + (i - m->nmaster) * m->ww / (n - m->nmaster), m->wy + mh, m->ww - (i - m->nmaster) * m->ww / (n - m->nmaster) - 2 * c->bw, m->wh - mh - 2 * c->bw, c->bw);
 }
 
 /* dwm-bottomstack ------------------------------------------------------------ */

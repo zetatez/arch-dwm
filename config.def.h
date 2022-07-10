@@ -86,9 +86,10 @@ static const Layout layouts[] = {
 	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
     { "Monocle",                            monocle },
+	{ "Deck",                deckhorizontalvertical }, // dwm-deckhorizontalvertical
 	{ "AnyAny",                     anywhereanysize }, // dwm-anywhereanysize
     { "∅",                                     NULL }, /* no layout function means floating behavior */
-	{ NULL,                                   NULL  }, // dwm-cyclelayouts
+	{ NULL,                                    NULL }, // dwm-cyclelayouts
 };
 
 /* key definitions */
@@ -150,8 +151,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_o,          setlayout,         {.v = &layouts[14]} }, // tatami                   dwm-tatami
     { MODKEY|ShiftMask,             XK_v,          setlayout,         {.v = &layouts[15]} }, // logarithmicspiral        dwm-layouts
 	{ MODKEY,                       XK_m,          setlayout,         {.v = &layouts[16]} }, // monocle
-	{ MODKEY|ShiftMask,             XK_u,          setlayout,         {.v = &layouts[17]} }, // anywhereanysize          dwm-anywhereanysize
-	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[18]} }, // no layout means floating
+	{ MODKEY,                       XK_u,          setlayout,         {.v = &layouts[17]} }, // deckhorizontalvertical   dwm-layouts
+	{ MODKEY|ShiftMask,             XK_u,          setlayout,         {.v = &layouts[18]} }, // anywhereanysize          dwm-anywhereanysize
+	{ MODKEY|ShiftMask,             XK_f,          setlayout,         {.v = &layouts[19]} }, // no layout means floating
 	{ MODKEY,                       XK_Return,     zoom,              {0} },
 	{ MODKEY,                       XK_Tab,        view,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,        {0} },
