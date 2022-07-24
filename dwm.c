@@ -220,12 +220,6 @@ static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
 static void scan(void);
-static void scratchpad_hide ();                       // dwm-scratchpad
-static _Bool scratchpad_last_showed_is_killed (void); // dwm-scratchpad
-static void scratchpad_remove ();                     // dwm-scratchpad
-static void scratchpad_show ();                       // dwm-scratchpad
-static void scratchpad_show_client (Client * c);      // dwm-scratchpad
-static void scratchpad_show_first (void);             // dwm-scratchpad
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
@@ -246,6 +240,7 @@ static void tagmon(const Arg *arg);
 static void tileright(Monitor *); // by myself
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglescratch(const Arg *arg);    // dwm-scratchpad
 static void togglesticky(const Arg *arg);     // dwm-sticky
 static void togglefullscreen(const Arg *arg); // dwm-actualfullscreen
 static void toggletag(const Arg *arg);
@@ -313,10 +308,6 @@ static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static xcb_connection_t *xcon; // dwm-swallow
 
-/* scratchpad */                                             // dwm-scratchpad
-# define SCRATCHPAD_MASK (1u << sizeof tags / sizeof * tags) // dwm-scratchpad
-static Client * scratchpad_last_showed = NULL;               // dwm-scratchpad
-
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
@@ -331,9 +322,10 @@ struct Pertag {                                                                 
 	int showbars[LENGTH(tags) + 1]; /* display bar for the current tag */                // dwm-pertag
 };                                                                                       // dwm-pertag
 
+static unsigned int scratchtag = 1 << LENGTH(tags);         // dwm-scratchpad
+
 /* compile-time check if all tags fit into an unsigned int bit array. */
-// struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; }; // dwm-scratchpad
-struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };    // dwm-scratchpad
+struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* dwm will keep pid's of processes from autostart array and kill them at quit */
 static pid_t *autostart_pids;
@@ -402,9 +394,7 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-// 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];     // dwm-scratchpad
-	if (c->tags != SCRATCHPAD_MASK)                                                        // dwm-scratchpad
-		c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags]; // dwm-scratchpad
+ 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
 int
@@ -1230,6 +1220,14 @@ manage(Window w, XWindowAttributes *wa)
 		&& (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? bh : c->mon->my);
 	c->bw = borderpx;
 
+    selmon->tagset[selmon->seltags] &= ~scratchtag;              // dwm-scratchpad
+    if (!strcmp(c->name, scratchpadname)) {                      // dwm-scratchpad
+    	c->mon->tagset[c->mon->seltags] |= c->tags = scratchtag; // dwm-scratchpad
+    	c->isfloating = True;                                    // dwm-scratchpad
+    	c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);     // dwm-scratchpad
+    	c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);    // dwm-scratchpad
+    }                                                            // dwm-scratchpad
+
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
@@ -1600,93 +1598,6 @@ scan(void)
 	}
 }
 
-static void                                                                                           // dwm-scratchpad
-scratchpad_hide ()                                                                                    // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-    if (selmon -> sel) {                                                                              // dwm-scratchpad
-        selmon -> sel -> tags = SCRATCHPAD_MASK;                                                      // dwm-scratchpad
-        selmon -> sel -> isfloating = 1;                                                              // dwm-scratchpad
-        focus(NULL);                                                                                  // dwm-scratchpad
-        arrange(selmon);                                                                              // dwm-scratchpad
-    }                                                                                                 // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static _Bool                                                                                          // dwm-scratchpad
-scratchpad_last_showed_is_killed (void)                                                               // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-	_Bool killed = 1;                                                                                 // dwm-scratchpad
-	for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                                  // dwm-scratchpad
-		if (c == scratchpad_last_showed) {                                                            // dwm-scratchpad
-			killed = 0;                                                                               // dwm-scratchpad
-			break;                                                                                    // dwm-scratchpad
-		}                                                                                             // dwm-scratchpad
-	}                                                                                                 // dwm-scratchpad
-	return killed;                                                                                    // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static void                                                                                           // dwm-scratchpad
-scratchpad_remove ()                                                                                  // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-	if (selmon -> sel && scratchpad_last_showed != NULL && selmon -> sel == scratchpad_last_showed) { // dwm-scratchpad
-        selmon -> sel -> isfloating = 0;                                                              // dwm-scratchpad
-		scratchpad_last_showed = NULL;                                                                // dwm-scratchpad
-    }                                                                                                 // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static void                                                                                           // dwm-scratchpad
-scratchpad_show ()                                                                                    // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-	if (scratchpad_last_showed == NULL || scratchpad_last_showed_is_killed ())                        // dwm-scratchpad
-		scratchpad_show_first ();                                                                     // dwm-scratchpad
-	else {                                                                                            // dwm-scratchpad
-		if (scratchpad_last_showed -> tags != SCRATCHPAD_MASK) {                                      // dwm-scratchpad
-			scratchpad_last_showed -> tags = SCRATCHPAD_MASK;                                         // dwm-scratchpad
-			focus(NULL);                                                                              // dwm-scratchpad
-			arrange(selmon);                                                                          // dwm-scratchpad
-		}                                                                                             // dwm-scratchpad
-		else {                                                                                        // dwm-scratchpad
-			_Bool found_current = 0;                                                                  // dwm-scratchpad
-			_Bool found_next = 0;                                                                     // dwm-scratchpad
-			for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                          // dwm-scratchpad
-				if (found_current == 0) {                                                             // dwm-scratchpad
-					if (c == scratchpad_last_showed) {                                                // dwm-scratchpad
-						found_current = 1;                                                            // dwm-scratchpad
-						continue;                                                                     // dwm-scratchpad
-					}                                                                                 // dwm-scratchpad
-				}                                                                                     // dwm-scratchpad
-				else {                                                                                // dwm-scratchpad
-					if (c -> tags == SCRATCHPAD_MASK) {                                               // dwm-scratchpad
-						found_next = 1;                                                               // dwm-scratchpad
-						scratchpad_show_client (c);                                                   // dwm-scratchpad
-						break;                                                                        // dwm-scratchpad
-					}                                                                                 // dwm-scratchpad
-				}                                                                                     // dwm-scratchpad
-			}                                                                                         // dwm-scratchpad
-			if (found_next == 0) scratchpad_show_first ();                                            // dwm-scratchpad
-		}                                                                                             // dwm-scratchpad
-	}                                                                                                 // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static void                                                                                           // dwm-scratchpad
-scratchpad_show_client (Client * c)                                                                   // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-	scratchpad_last_showed = c;                                                                       // dwm-scratchpad
-	c -> tags = selmon->tagset[selmon->seltags];                                                      // dwm-scratchpad
-	focus(c);                                                                                         // dwm-scratchpad
-	arrange(selmon);                                                                                  // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-                                                                                                      // dwm-scratchpad
-static void scratchpad_show_first (void)                                                              // dwm-scratchpad
-{                                                                                                     // dwm-scratchpad
-	for (Client * c = selmon -> clients; c != NULL; c = c -> next) {                                  // dwm-scratchpad
-		if (c -> tags == SCRATCHPAD_MASK) {                                                           // dwm-scratchpad
-			scratchpad_show_client (c);                                                               // dwm-scratchpad
-			break;                                                                                    // dwm-scratchpad
-		}                                                                                             // dwm-scratchpad
-	}                                                                                                 // dwm-scratchpad
-}                                                                                                     // dwm-scratchpad
-
 void
 sendmon(Client *c, Monitor *m)
 {
@@ -1972,6 +1883,7 @@ spawn(const Arg *arg)
 {
 	if (arg->v == dmenucmd)
 		dmenumon[0] = '0' + selmon->num;
+	selmon->tagset[selmon->seltags] &= ~scratchtag;           // dwm-scratchpad
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -2057,6 +1969,28 @@ togglefloating(const Arg *arg)
 	arrange(selmon);
 }
 
+void                                                                              // dwm-scratchpad
+togglescratch(const Arg *arg)                                                     // dwm-scratchpad
+{                                                                                 // dwm-scratchpad
+	Client *c;                                                                    // dwm-scratchpad
+	unsigned int found = 0;                                                       // dwm-scratchpad
+                                                                                  // dwm-scratchpad
+	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next); // dwm-scratchpad
+	if (found) {                                                                  // dwm-scratchpad
+		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;    // dwm-scratchpad
+		if (newtagset) {                                                          // dwm-scratchpad
+			selmon->tagset[selmon->seltags] = newtagset;                          // dwm-scratchpad
+			focus(NULL);                                                          // dwm-scratchpad
+			arrange(selmon);                                                      // dwm-scratchpad
+		}                                                                         // dwm-scratchpad
+		if (ISVISIBLE(c)) {                                                       // dwm-scratchpad
+			focus(c);                                                             // dwm-scratchpad
+			restack(selmon);                                                      // dwm-scratchpad
+		}                                                                         // dwm-scratchpad
+	} else                                                                        // dwm-scratchpad
+		spawn(arg);                                                               // dwm-scratchpad
+}                                                                                 // dwm-scratchpad
+
 void                                                // dwm-sticky
 togglesticky(const Arg *arg)                        // dwm-sticky
 {                                                   // dwm-sticky
@@ -2070,7 +2004,7 @@ void                                                        // dwm-actualfullscr
 togglefullscreen(const Arg *arg)                            // dwm-actualfullscreen
 {                                                           // dwm-actualfullscreen
   if(selmon->sel)                                           // dwm-actualfullscreen
-	// togglebar(NULL);                                        // dwm-actualfullscreen
+	// togglebar(NULL);                                     // dwm-actualfullscreen
     setfullscreen(selmon->sel, !selmon->sel->isfullscreen); // dwm-actualfullscreen
 }                                                           // dwm-actualfullscreen
 
@@ -2173,9 +2107,6 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
-
-	if (scratchpad_last_showed == c)   // dwm-scratchpad
-		scratchpad_last_showed = NULL; // dwm-scratchpad
 
 	free(c);
 //	focus(NULL);            // dwm-swallow
