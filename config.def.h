@@ -82,7 +82,7 @@ static const Layout layouts[] = {
 	{ "Bottom Stack",         bottomstackhorizontal }, // dwm-bottomstack
     { "Tile Right",                       tileright }, // tile -> tileright
     { "Tile Left",                         tileleft }, // dwm-leftstack
-    { "Grid",                           gaplessgrid }, // dwm-gaplessgrid
+    { "Grid",                                  grid }, // dwm-grid
 	{ "Tatami",                              tatami }, // dwm-tatami
 	{ "Logarithmic Spiral",       logarithmicspiral }, // dwm-logarithmicspiral
     { "Monocle",                            monocle },

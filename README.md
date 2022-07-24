@@ -9,7 +9,7 @@
     - dwm-cyclelayouts-20180524-6.2.diff
     - dwm-deck-double-smartborders-6.2.diff
     - dwm-fibonacci-20200418-c82db69.diff
-    - dwm-gaplessgrid-20160731-56a31dc.diff
+    - dwm-gridmode-5.8.2.diff
     - dwm-hide_vacant_tags-6.3.diff
     - dwm-leftstack-6.2.diff
     - dwm-movestack-20211115-a786211.diff
@@ -30,7 +30,7 @@
     - bottom stack vertical
     - fibonacci dwindle
     - fibonacci sprial
-    - gapless grid
+    - grid
     - logarithmic sprial
     - tatami
     - center
