@@ -1,22 +1,6 @@
 // layouts
 #include<math.h>
 
- // dwm-centerfirstwindow
-void
-centerfirstwindow(Monitor *m) {
-    float fwszw,fwszh = 0.5;
-    Client * c = nexttiled(m->clients);
-
-    fwszw = (firstwindowszw > 0.8) ? 0.8 : firstwindowszw;
-    fwszw = (firstwindowszw < 0.2) ? 0.2 : firstwindowszw;
-    fwszh = (firstwindowszh > 0.8) ? 0.8 : firstwindowszh;
-    fwszh = (firstwindowszh < 0.2) ? 0.2 : firstwindowszh;
-
-	resize(c, m->ww/2 - (m->ww * fwszw)/2, m->wh/2 - m->wh * fwszh/2, m->ww * fwszw - 2 * c->bw, m->wh * fwszh - 2 * c->bw, False);
-    return;
-}
-
-
 /* dwm-anywhereanysize------------------------------------------------------------ */
 void
 anywhereanysize(Monitor *m) {
@@ -70,7 +54,6 @@ overlaylayerhorizontal(Monitor *m) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
         } else {
-            /* resize(c, m->wx, m->wy + (n - i - 1) * m->wh / (n - 1), m->ww - 2 * c->bw, m->wh / (n - 1) - 2 * c->bw, False); */
             resize(c, m->wx, m->wy + m->wh * (1 - m->freeh) + (n - i - 1) * m->wh * m->freeh / (n - 1), m->ww - 2 * c->bw, m->wh * m->freeh / (n - 1) - 2 * c->bw, False);
         }
     }
@@ -89,8 +72,7 @@ overlaylayervertical(Monitor *m) {
         if (i == 0) {
             resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, False);
         } else {
-            /* resize(c, m->wx + (n - i - 1) * m->ww / (n - 1), m->wy, m->ww / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False); */
-            resize(c, m->wx + m->ww * m->mfact + (n - i - 1) * m->ww * (1 - m->mfact) / (n - 1), m->wy, m->ww * (1 - m->mfact) / (n - 1) - 2 * c->bw, m->wh - 2 * c->bw, False);
+            resize(c, m->wx + (n - i - 1) * m->ww  / (n - 1), m->wy + m->wh * (1 - m->freeh), m->ww / (n - 1) - 2 * c->bw, m->wh * m->freeh - 2 * c->bw, False);
         }
     }
 }
@@ -133,8 +115,6 @@ fibonacci(Monitor *m, int s) {
     for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
     if(n == 0)
         return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
     nx = m->wx;
     ny = 0;
@@ -234,8 +214,6 @@ tileleft(Monitor *m)
 	if (n == 0)
 		return;
 
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 	else
@@ -266,8 +244,6 @@ deckvertical(Monitor *m) {
     if(n == 0)
         return;
 
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
     if(n > m->nmaster)
         mw = m->nmaster ? m->ww * m->mfact : 0;
     else
@@ -288,8 +264,6 @@ deckhorizontal(Monitor *m) {
     for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
     if(n == 0)
         return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
     if(n > m->nmaster)
         mh = m->nmaster ? m->wh * (1 - m->freeh) : 0;
@@ -312,8 +286,6 @@ deckhorizontalvertical(Monitor *m) {
     if(n == 0)
         return;
 
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
     if(n > m->nmaster)
         mh = m->nmaster ? m->wh * (1 - m->freeh) : 0;
     else
@@ -328,6 +300,37 @@ deckhorizontalvertical(Monitor *m) {
 
 /* dwm-bottomstack ------------------------------------------------------------ */
 static void
+bottomstackhorizontal(Monitor *m) {
+	int w, mh, mx, tx, ty, th;
+	unsigned int i, n;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster) {
+		mh = m->nmaster ? (1 - m->freeh) * m->wh : 0;
+		th = (m->wh - mh) / (n - m->nmaster);
+		ty = m->wy + mh;
+	} else {
+		th = mh = m->wh;
+		ty = m->wy;
+	}
+	for (i = mx = 0, tx = m->wx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+		if (i < m->nmaster) {
+			w = (m->ww - mx) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx + mx, m->wy, w - (2 * c->bw), mh - (2 * c->bw), 0);
+			mx += WIDTH(c);
+		} else {
+			resize(c, tx, ty, m->ww - (2 * c->bw), th - (2 * c->bw), 0);
+			if (th != m->wh)
+				ty += HEIGHT(c);
+		}
+	}
+}
+
+static void
 bottomstackvertical(Monitor *m) {
 	int w, h, mh, mx, tx, ty, tw;
 	unsigned int i, n;
@@ -337,8 +340,6 @@ bottomstackvertical(Monitor *m) {
 	if (n == 0)
 		return;
 
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-                                                                                //
 	if (n > m->nmaster) {
 		mh = m->nmaster ? (1 - m->freeh) * m->wh : 0;
 		tw = m->ww / (n - m->nmaster);
@@ -362,39 +363,6 @@ bottomstackvertical(Monitor *m) {
 	}
 }
 
-static void
-bottomstackhorizontal(Monitor *m) {
-	int w, mh, mx, tx, ty, th;
-	unsigned int i, n;
-	Client *c;
-
-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-
-	if (n > m->nmaster) {
-		mh = m->nmaster ? (1 - m->freeh) * m->wh : 0;
-		th = (m->wh - mh) / (n - m->nmaster);
-		ty = m->wy + mh;
-	} else {
-		th = mh = m->wh;
-		ty = m->wy;
-	}
-	for (i = mx = 0, tx = m->wx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-		if (i < m->nmaster) {
-			w = (m->ww - mx) / (MIN(n, m->nmaster) - i);
-			resize(c, m->wx + mx, m->wy, w - (2 * c->bw), mh - (2 * c->bw), 0);
-			mx += WIDTH(c);
-		} else {
-			resize(c, tx, ty, m->ww - (2 * c->bw), th - (2 * c->bw), 0);
-			if (th != m->wh)
-				ty += HEIGHT(c);
-		}
-	}
-}
-
 /* dwm-tatami ------------------------------------------------------------ */
 void
 tatami(Monitor *m) {
@@ -407,8 +375,6 @@ tatami(Monitor *m) {
 	if(n == 0)
 		return;
 
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
-	
 	nx = m->wx;
 	ny = 0;
 	nw = m->ww;

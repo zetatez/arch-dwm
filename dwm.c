@@ -99,14 +99,13 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;                             // dwm-sticky
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;                   // dwm-sticky            // dwm-centerfirstwindow
-// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerfirstwindow; // dwm-centerfirstwindow // dwm-swallow
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, centerfirstwindow, isterminal, noswallow;   // dwm-swallow
-	pid_t pid;                                                                                                                   // dwm-swallow
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;                                    // dwm-sticky
+// 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;                          // dwm-swallow
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, isterminal, noswallow;   // dwm-swallow
+	pid_t pid;                                                                                                // dwm-swallow
 	Client *next;
 	Client *snext;
-	Client *swallowing;                                                                                                          // dwm-swallow
+	Client *swallowing;                                                                                       // dwm-swallow
 	Monitor *mon;
 	Window win;
 };
@@ -155,7 +154,6 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
-	int centerfirstwindow; // dwm-centerfirstwindow
 	int isterminal; // dwm-swallow
 	int noswallow;  // dwm-swallow
 	int monitor;
@@ -367,7 +365,6 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
-    c->centerfirstwindow = 0;                                                                          // dwm-centerfirstwindow
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -382,7 +379,6 @@ applyrules(Client *c)
 			c->isterminal = r->isterminal; // dwm-swallow
 			c->noswallow  = r->noswallow;  // dwm-swallow
 			c->isfloating = r->isfloating;
-			c->centerfirstwindow = r->centerfirstwindow;                                                // dwm-centerfirstwindow
 			c->tags |= r->tags;
 
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -1923,8 +1919,6 @@ tileright(Monitor *m)
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
-
-    if (n == 1 && mcenterfirstwindow && m->sel->centerfirstwindow) { centerfirstwindow(m);  return; };        // dwm-centerfirstwindow
 
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact : 0;

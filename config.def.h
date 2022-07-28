@@ -4,7 +4,7 @@
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 0;        /* snap pixel */
 static const int swallowfloating    = 1;        /* 1 means swallow floating windows by default */  // dwm-swallow
-static const int showbar            = 1;        /* 0 means no bar */
+static const int showbar            = 0;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int barheight          = 24;       /* bh = (barheight > drw->fonts->h ) && (barheight < 3 * drw->fonts->h ) ? barheight : drw->fonts->h + 2 */ // dwm-bar-height
 static const char *fonts[]          = { "monospace:size=10" };
@@ -34,13 +34,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      	         instance    title    tags mask     isfloating   centerfirstwindow?   isterminal     noswallow    monitor */
-	{ "st",                  NULL,       NULL,    0,            0,     	     1,		              1,             1,          -1 }, // dwm-centerfirstwindow // dwm-swallow
-	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	     1,		              0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
-	{ "Gimp",                NULL,       NULL,    0,            1,           0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
-	{ "Firefox",             NULL,       NULL,    1 << 8,       0,           0,                   0,            -1,          -1 }, // dwm-centerfirstwindow // dwm-swallow
-    { "kitty",	             NULL,       NULL,	  0,		    0,			 1,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
-    { "vimb",	             NULL,       NULL,	  0,		    0,			 0,                   0,             0,          -1 }, // dwm-centerfirstwindow // dwm-swallow
+	/* class      	         instance    title    tags mask     isfloating    isterminal     noswallow    monitor */
+	{ "st",                  NULL,       NULL,    0,            0,     	      1,             1,          -1 }, // dwm-swallow
+	{ "netease-cloud-music", NULL,       NULL,    0,            0,     	      0,             0,          -1 }, // dwm-swallow
+	{ "Gimp",                NULL,       NULL,    0,            1,            0,             0,          -1 }, // dwm-swallow
+	{ "Firefox",             NULL,       NULL,    1 << 8,       0,            0,            -1,          -1 }, // dwm-swallow
+    { "kitty",	             NULL,       NULL,	  0,		    0,			  0,             0,          -1 }, // dwm-swallow
+    { "vimb",	             NULL,       NULL,	  0,		    0,			  0,             0,          -1 }, // dwm-swallow
 };
 
 static const SkipSwallow skipswallow[] = {                            // dwm-swallow: fix dwm-swallow annoying "swallow all parrent process problem". by myself
@@ -58,7 +58,6 @@ static const int nmaster            = 1;    /* number of clients in master area 
 // static const int resizehints     = 1;    /* 1 means respect size hints in tiled resizals */            // dwm-tatami
 static const int resizehints        = 0;    /* 1 means respect size hints in tiled resizals */            // dwm-tatami
 static const int lockfullscreen     = 1;    /* 1 will force focus on the fullscreen window */
-static const int mcenterfirstwindow = 0;    /* factor of center first window size [0.20, 0.80] */         // dwm-centerfistwindow
 static const float firstwindowszw   = 0.64; /* factor of center first window size width  [0.20, 0.80] */  // dwm-centerfistwindow
 static const float firstwindowszh   = 0.48; /* factor of center first window size height [0.20, 0.80] */  // dwm-centerfistwindow
 static const float centerwindowszw  = 0.64; /* factor of center window size width  [0.20, 0.80] */        // dwm-center my layout
@@ -78,8 +77,8 @@ static const Layout layouts[] = {
 	{ "Deck",                          deckvertical }, // dwm-deckvertical
     { "Fibonacci",                           spiral }, // dwm-fibonacci
     { "Fibonacci",                          dwindle }, // dwm-fibonacci
-	{ "Bottom Stack",           bottomstackvertical }, // dwm-bottomstack
 	{ "Bottom Stack",         bottomstackhorizontal }, // dwm-bottomstack
+	{ "Bottom Stack",           bottomstackvertical }, // dwm-bottomstack
     { "Tile Right",                       tileright }, // tile -> tileright
     { "Tile Left",                         tileleft }, // dwm-leftstack
     { "Grid",                                  grid }, // dwm-grid
@@ -141,12 +140,12 @@ static Key keys[] = {
     { MODKEY,                       XK_g,          setlayout,         {.v = &layouts[2]} },  // overlaylayergrid         dwm-layouts
     { MODKEY,                       XK_w,          setlayout,         {.v = &layouts[3]} },  // overlaylayerhorizontal   dwm-layouts
     { MODKEY|ShiftMask,             XK_w,          setlayout,         {.v = &layouts[4]} },  // overlaylayervertical     dwm-layouts
-	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[5]} },  // deckvertical             dwm-layouts
-	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[6]} },  // deckhorizontal           dwm-layouts
+	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[5]} },  // deckhorizontal           dwm-layouts
+	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[6]} },  // deckvertical             dwm-layouts
 	{ MODKEY,                       XK_r,          setlayout,         {.v = &layouts[7]} },  // sprial                   dwm-fibonacci
 	{ MODKEY|ShiftMask,             XK_r,          setlayout,         {.v = &layouts[8]} },  // dwindle                  dwm-fibonacci
-	{ MODKEY,                       XK_y,          setlayout,         {.v = &layouts[9]} },  // bstack                   dwm-bottomstackvertical
-	{ MODKEY|ShiftMask,             XK_y,          setlayout,         {.v = &layouts[10]} }, // bstack                   dwm-bottomstackhorizontal
+	{ MODKEY,                       XK_e,          setlayout,         {.v = &layouts[9]} },  // bstack                   dwm-bottomstackvertical
+	{ MODKEY|ShiftMask,             XK_e,          setlayout,         {.v = &layouts[10]} }, // bstack                   dwm-bottomstackhorizontal
 	{ MODKEY,                       XK_t,          setlayout,         {.v = &layouts[11]} }, // tileright                default tile
     { MODKEY|ShiftMask,             XK_t,          setlayout,         {.v = &layouts[12]} }, // lefttile                 dwm-lefttile
     { MODKEY|ShiftMask,             XK_g,          setlayout,         {.v = &layouts[13]} }, // gaplessgrid              dwm-gaplessgrid
